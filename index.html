@@ -75,8 +75,8 @@
         <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">LIGHT THE WORLD</div>
     </div>
 
-    <!-- Audio Element: Silent Night -->
-    <audio id="bg-music" loop>
+    <!-- Audio Element: Silent Night (Added autoplay) -->
+    <audio id="bg-music" loop autoplay>
         <source src="Silent_night_holy_night.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -129,8 +129,8 @@
         </div>
     </div>
 
-    <!-- Help Modal -->
-    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg opacity-1 pointer-events-auto transition-opacity duration-500">
+    <!-- Help Modal: Added inline style for opacity: 1 to fix double-click bug -->
+    <div id="help-modal" style="opacity: 1;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg pointer-events-auto transition-opacity duration-500">
         <div class="glass-panel p-8 max-w-md w-4/5 text-center transform scale-100 transition-transform border-yellow-500/20" id="help-box">
             <h3 class="text-yellow-400 font-serif text-2xl mb-6 tracking-[0.15em] border-b border-yellow-500/20 pb-4 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">GESTURE GUIDE</h3>
             <div class="space-y-6 text-left pl-2">
@@ -225,6 +225,7 @@
         window.toggleHelp = () => {
             const el = document.getElementById('help-modal');
             const box = document.getElementById('help-box');
+            // Check opacity against '1' to toggle properly
             if (el.style.opacity === '1') {
                 el.style.opacity = '0'; el.style.pointerEvents = 'none'; box.style.transform = 'scale(0.95)';
             } else {
@@ -248,14 +249,13 @@
 
         window.startExperience = () => {
             toggleHelp();
-            // 修复 Bug：只确保音乐播放，而不切换（避免误关）
             if(!audio) audio = document.getElementById('bg-music');
             
+            // Only play if paused, do not toggle off
             if (audio.paused) {
-                // 如果没播放，则播放
                 toggleMusic();
             } else {
-                // 如果已经在播放，确保按钮状态是激活的，不做暂停操作
+                // Ensure visual state matches
                 musicBtn.classList.add('music-active');
                 musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
             }
@@ -273,6 +273,19 @@
             // Hide loading
             loadingScreen.style.opacity = '0';
             setTimeout(() => loadingScreen.remove(), 1500);
+
+            // Try to autoplay music on load and update button state
+            audio = document.getElementById('bg-music');
+            const promise = audio.play();
+            if (promise !== undefined) {
+                promise.then(_ => {
+                    musicBtn.classList.add('music-active');
+                    musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
+                }).catch(error => {
+                    // Auto-play was prevented, waiting for user interaction
+                    console.log("Autoplay prevented");
+                });
+            }
 
             // Init Vision
             statusText.innerText = "INITIALIZING VISION...";
