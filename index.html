@@ -326,12 +326,35 @@
             gradient.addColorStop(0, '#fff');
             gradient.addColorStop(1, '#eee');
             ctx.fillStyle = gradient; ctx.fillRect(0,0,256,256);
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = '#C5A000'; ctx.strokeRect(4,4,248,248);
-            ctx.fillStyle = '#C5A000'; ctx.fillRect(12,12,232,232);
-            ctx.fillStyle = '#fff'; ctx.font = '100px serif';
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText('✝', 128, 128);
+            
+            // 更优雅的金色边框，类似相框
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#C5A000'; ctx.strokeRect(6,6,244,244);
+            
+            // 内部背景，稍微暖色调
+            ctx.fillStyle = '#111'; ctx.fillRect(14,14,228,228);
+            
+            // 绘制简约的金色线条十字架 (Cross)
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            
+            // 竖线
+            ctx.moveTo(128, 50);
+            ctx.lineTo(128, 206);
+            
+            // 横线
+            ctx.moveTo(70, 100);
+            ctx.lineTo(186, 100);
+            
+            ctx.stroke();
+            
+            // 添加光晕效果
+            ctx.shadowColor = '#FFD700';
+            ctx.shadowBlur = 20;
+            ctx.stroke(); // 再描一次以增强光晕
+            ctx.shadowBlur = 0; // 重置
+
             defaultPhotoTexture = new THREE.CanvasTexture(cvs);
         }
 
@@ -407,7 +430,9 @@
                 const treePos = new THREE.Vector3(tx, y, tz);
 
                 const dist = Math.sqrt(tx*tx + tz*tz);
-                const scatterFactor = 40 / (dist + 0.5) + 1.8; 
+                // Updated: Reduced scatter factor for mobile zoom visibility
+                // Was 40, now 30 to keep photos closer
+                const scatterFactor = 30 / (dist + 0.5) + 1.5; 
                 const scatterPos = treePos.clone();
                 scatterPos.x *= scatterFactor;
                 scatterPos.z *= scatterFactor;
@@ -593,7 +618,9 @@
                 if (newState === 'tree') {
                     target = p.treePos; targetRot = p.treeRot;
                 } else if (newState === 'zoom' && p.isPhoto) {
-                    target = p.scatterPos.clone().multiplyScalar(0.5); target.z += 20; 
+                    // Updated: Tighter zoom position
+                    target = p.scatterPos.clone().multiplyScalar(0.7); // Closer
+                    target.z += 10; // Less forward push to keep in view
                     targetRot = new THREE.Euler(0, 0, 0); 
                 } else {
                     target = p.scatterPos; targetRot = p.scatterRot;
