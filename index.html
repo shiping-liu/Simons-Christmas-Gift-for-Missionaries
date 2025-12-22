@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Called to Serve - Vision</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { 
+            margin: 0; overflow: hidden; 
+            background: radial-gradient(circle at center, #010a01 0%, #000 100%);
+            color: white; 
+            font-family: 'Cinzel', serif;
+            touch-action: none; 
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300&display=swap');
+
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        #video-container {
+            position: absolute; top: 16px; right: 16px; width: 80px; height: 106px; 
+            border-radius: 12px; overflow: hidden; z-index: 10;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: #000;
+            opacity: 0; transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        #video-input { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+
+        .glass-panel {
+            background: rgba(10, 20, 10, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+        }
+
+        #loading {
+            position: fixed; inset: 0; background: #000; z-index: 100; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            transition: opacity 1s ease-out;
+        }
+
+        .state-badge {
+            font-size: 0.75rem; padding: 4px 8px; border-radius: 4px;
+            background: rgba(255,255,255,0.05); color: #888; transition: all 0.3s;
+        }
+        .state-active {
+            background: rgba(255, 215, 0, 0.2); color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.3); font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mb-4"></div>
+        <div class="text-yellow-500 text-xl font-serif tracking-widest">LIGHT THE WORLD</div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="video-container">
+        <video id="video-input" width="320" height="240" playsinline muted autoplay></video>
+    </div>
+
+    <!-- UI Overlay -->
+    <div class="absolute inset-0 pointer-events-none flex flex-col justify-between z-20">
+        <!-- Header -->
+        <div class="p-4 mt-2 flex justify-between items-start">
+            <div class="glass-panel px-4 py-3 flex flex-col gap-2 min-w-[150px]">
+                <div class="flex items-center gap-3 border-b border-white/10 pb-2 mb-1">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-500 transition-colors duration-500"></div>
+                    <span id="status-text" class="text-xs font-bold text-gray-300 tracking-wider">SYSTEM READY</span>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div id="badge-tree" class="state-badge state-active">✊ 圣诞树 (Tree)</div>
+                    <div id="badge-christus" class="state-badge">🖐 异象 (Vision)</div>
+                </div>
+            </div>
+            
+            <button onclick="toggleHelp()" class="glass-panel w-10 h-10 flex items-center justify-center text-yellow-500 pointer-events-auto active:scale-95">
+                <i class="fa-solid fa-question"></i>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 w-full pointer-events-auto flex justify-center pb-8">
+            <label class="glass-panel px-8 py-4 flex items-center gap-3 cursor-pointer hover:bg-white/5 active:scale-95 transition-all group">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-700 to-yellow-900 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/20 transition-all">
+                    <i class="fa-solid fa-images text-white text-lg"></i>
+                </div>
+                <div class="text-left">
+                    <div class="text-xs text-gray-400 uppercase tracking-wider">Memories</div>
+                    <div class="text-sm font-bold text-white">上传照片</div>
+                </div>
+                <input type="file" id="file-input" class="hidden" multiple accept="image/*">
+            </label>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-panel p-8 max-w-sm w-4/5 text-center transform scale-95 transition-transform" id="help-box">
+            <h3 class="text-yellow-500 font-serif text-xl mb-6 tracking-widest border-b border-white/10 pb-4">Gesture Guide</h3>
+            <div class="space-y-6 text-left pl-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-8 text-center text-2xl">✊</div>
+                    <div>
+                        <div class="text-white font-bold text-sm">握拳 (Fist)</div>
+                        <div class="text-gray-400 text-xs">展示圣诞树</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-8 text-center text-2xl">🖐</div>
+                    <div>
+                        <div class="text-white font-bold text-sm">张手 (Open Hand)</div>
+                        <div class="text-gray-400 text-xs">树散开，展现神圣异象</div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleHelp()" class="mt-8 px-8 py-3 bg-yellow-900/40 text-yellow-400 text-xs rounded-lg hover:bg-yellow-800/40 transition w-full pointer-events-auto border border-yellow-500/20">BEGIN</button>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import TWEEN from 'three/addons/libs/tween.module.js';
+
+        // --- Configuration ---
+        const CONFIG = {
+            treeParticles: 1500,    // 树的粒子数量
+            spiritParticles: 4000,  // 增加数量以获得更精致的细节
+            photoCount: 8,          // 照片数量（少而精）
+            treeHeight: 65,
+            treeRadius: 28,
+            colors: {
+                matteGreen: 0x1a4015,  // 哑光绿
+                gold: 0xffd700,        // 金属金
+                red: 0x8b0000,         // 圣诞红
+                spiritGold: 0xffec8b   // 圣灵流光金
+            }
+        };
+
+        let scene, camera, renderer, composer;
+        let treeGroup = [];   // 存放树粒子对象 {mesh, treePos, scatterPos}
+        let spiritGroup = []; // 存放耶稣/文字粒子对象 {mesh, spiritPos}
+        let photoTextures = [];
+        let defaultPhotoTexture;
+        let currentMode = 'tree'; 
+        let time = 0;
+        let isCameraReady = false;
+
+        // UI Refs
+        const statusText = document.getElementById('status-text');
+        const statusDot = document.getElementById('status-dot');
+        const videoContainer = document.getElementById('video-container');
+        const loadingScreen = document.getElementById('loading');
+        const videoInput = document.getElementById('video-input');
+        
+        window.toggleHelp = () => {
+            const el = document.getElementById('help-modal');
+            const box = document.getElementById('help-box');
+            if (el.style.opacity === '1') {
+                el.style.opacity = '0'; el.style.pointerEvents = 'none'; box.style.transform = 'scale(0.95)';
+            } else {
+                el.style.opacity = '1'; el.style.pointerEvents = 'auto'; box.style.transform = 'scale(1)';
+            }
+        };
+
+        async function init() {
+            initThree();
+            generateDefaultTexture();
+            
+            // 1. 生成树粒子
+            createTreeSystem();
+            // 2. 生成圣灵（耶稣+文字）粒子
+            await createSpiritSystem();
+
+            animate();
+
+            // Hide loading
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => loadingScreen.remove(), 1000);
+
+            // Init Vision
+            statusText.innerText = "STARTING VISION...";
+            try {
+                await initMediaPipe();
+            } catch (e) {
+                console.error("Camera failed:", e);
+                statusText.innerText = "MANUAL MODE";
+                statusDot.classList.add('bg-red-500');
+            }
+        }
+
+        function initThree() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x010a01, 0.015); // 深绿色迷雾
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 10, 95);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Post Processing - Heavy Bloom for that "divine" look
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0.05;
+            bloomPass.strength = 1.8; 
+            bloomPass.radius = 0.5;
+            
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            // Lighting
+            scene.add(new THREE.AmbientLight(0x222222));
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+            sunLight.position.set(10, 50, 20);
+            scene.add(sunLight);
+            
+            // 底部暖光，照亮树底
+            const bottomLight = new THREE.PointLight(0xffaa00, 3, 50);
+            bottomLight.position.set(0, -25, 10);
+            scene.add(bottomLight);
+
+            window.addEventListener('resize', onResize);
+            document.getElementById('file-input').addEventListener('change', onFileUpload);
+        }
+
+        function generateDefaultTexture() {
+            const cvs = document.createElement('canvas');
+            cvs.width = 128; cvs.height = 128;
+            const ctx = cvs.getContext('2d');
+            ctx.fillStyle = '#fff'; ctx.fillRect(0,0,128,128);
+            ctx.fillStyle = '#C5A000'; ctx.fillRect(4,4,120,120);
+            ctx.fillStyle = '#fff'; ctx.font = '50px serif';
+            ctx.textAlign = 'center'; ctx.fillText('✝', 64, 80);
+            defaultPhotoTexture = new THREE.CanvasTexture(cvs);
+        }
+
+        // --- System 1: The Tree (Matte Green, Metal Gold, Red) ---
+        function createTreeSystem() {
+            const geo = new THREE.IcosahedronGeometry(0.6, 0); // 几何体作为粒子
+            const geoPhoto = new THREE.PlaneGeometry(4, 5);
+
+            // 材质定义
+            const matGreen = new THREE.MeshStandardMaterial({
+                color: CONFIG.colors.matteGreen, roughness: 0.8, metalness: 0.1,
+                emissive: 0x051005, emissiveIntensity: 0.2
+            });
+            const matRed = new THREE.MeshStandardMaterial({
+                color: CONFIG.colors.red, roughness: 0.3, metalness: 0.4,
+                emissive: 0x330000, emissiveIntensity: 0.5
+            });
+            const matGold = new THREE.MeshStandardMaterial({
+                color: CONFIG.colors.gold, roughness: 0.2, metalness: 1.0,
+                emissive: 0xaa8800, emissiveIntensity: 0.8
+            });
+
+            for(let i = 0; i < CONFIG.treeParticles; i++) {
+                let mesh, mat;
+                let isPhoto = false;
+
+                // 80% 绿色，15% 金色，5% 红色 (点缀照片)
+                const rand = Math.random();
+                if (i < CONFIG.photoCount) {
+                    isPhoto = true;
+                    mesh = new THREE.Mesh(geoPhoto, new THREE.MeshBasicMaterial({map: defaultPhotoTexture, side: THREE.DoubleSide}));
+                } else {
+                    if (rand > 0.85) mat = matGold;
+                    else if (rand > 0.75) mat = matRed;
+                    else mat = matGreen;
+                    
+                    mesh = new THREE.Mesh(geo, mat.clone());
+                    // 随机大小，金色粒子通常小一点闪一点
+                    const s = mat === matGold ? Math.random()*0.5 + 0.2 : Math.random()*0.8 + 0.4;
+                    mesh.scale.set(s,s,s);
+                }
+
+                // 螺旋算法
+                const p = i / CONFIG.treeParticles;
+                const h = CONFIG.treeHeight;
+                const angle = p * Math.PI * 26 + i; // 紧密的螺旋
+                const r = (1 - p) * CONFIG.treeRadius;
+                const y = (p * h) - (h / 2);
+
+                // Tree Position (Base)
+                const jitter = 1.5;
+                const tx = Math.cos(angle) * r + (Math.random()-0.5)*jitter;
+                const tz = Math.sin(angle) * r + (Math.random()-0.5)*jitter;
+                const treePos = new THREE.Vector3(tx, y, tz);
+
+                // Scatter Position (Opened Hand) -> 像爆炸一样向外推
+                // 越靠近中心的粒子推得越远，形成一个中空区域
+                const dir = new THREE.Vector3(tx, 0, tz).normalize(); // 忽略Y轴方向，主要水平散开
+                const dist = Math.sqrt(tx*tx + tz*tz);
+                const scatterFactor = 30 / (dist + 1) + 1.2; // 靠近中心的推力大
+                const scatterPos = treePos.clone();
+                scatterPos.x *= scatterFactor;
+                scatterPos.z *= scatterFactor;
+                scatterPos.y *= 1.1; // 稍微拉高一点
+
+                mesh.position.copy(treePos);
+                
+                // 只有照片要永远面朝摄像机
+                if(isPhoto) mesh.lookAt(0,0,100);
+                else mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+
+                scene.add(mesh);
+                
+                treeGroup.push({
+                    mesh,
+                    originalScale: mesh.scale.clone(),
+                    treePos,
+                    scatterPos,
+                    isPhoto,
+                    blinkSpeed: Math.random() * 0.05 + 0.02,
+                    blinkOffset: Math.random() * Math.PI * 2
+                });
+            }
+
+            // 树顶星
+            const starGeo = new THREE.OctahedronGeometry(2.5, 0);
+            const starMat = new THREE.MeshStandardMaterial({color: 0xffffff, emissive: 0xffd700, emissiveIntensity: 2});
+            const star = new THREE.Mesh(starGeo, starMat);
+            const starY = (CONFIG.treeHeight/2) + 2;
+            star.position.set(0, starY, 0);
+            scene.add(star);
+            treeGroup.push({
+                mesh: star,
+                originalScale: new THREE.Vector3(1,1,1),
+                treePos: new THREE.Vector3(0, starY, 0),
+                scatterPos: new THREE.Vector3(0, starY + 15, 0), // 星星升起
+                isPhoto: false,
+                blinkSpeed: 0, blinkOffset: 0
+            });
+        }
+
+        // --- System 2: The Spirit (Jesus + Text) ---
+        async function createSpiritSystem() {
+            // 粒子材质：极亮的流光金
+            const matSpirit = new THREE.MeshStandardMaterial({
+                color: 0xffffff, 
+                roughness: 0.4, 
+                metalness: 1.0,
+                emissive: CONFIG.colors.spiritGold, 
+                emissiveIntensity: 1.2,
+                transparent: true,
+                opacity: 0 // 初始不可见
+            });
+            const geo = new THREE.BoxGeometry(0.3, 0.3, 0.3); // 方形像素点感觉
+
+            // 1. 生成文字粒子点位 "Thank you for your service to the Lord!"
+            const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!");
+            
+            // 2. 生成耶稣形态点位
+            const christusPoints = generateChristusPoints(CONFIG.spiritParticles - textPoints.length);
+
+            // 合并所有点位
+            const allPoints = [...christusPoints, ...textPoints];
+
+            allPoints.forEach(pt => {
+                const mesh = new THREE.Mesh(geo, matSpirit.clone());
+                
+                // 初始状态：位置随机（或者在中心），缩放为0
+                mesh.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+                mesh.scale.set(0,0,0);
+                
+                scene.add(mesh);
+
+                spiritGroup.push({
+                    mesh,
+                    targetPos: pt, // 目标位置
+                    blinkSpeed: Math.random() * 0.1 + 0.1, // 闪烁更快
+                    blinkOffset: Math.random() * Math.PI * 2
+                });
+            });
+        }
+
+        // 辅助：生成精致的 Christus 点云
+        function generateChristusPoints(count) {
+            const points = [];
+            
+            // 增加权重分布以获得更多细节
+            const headCount = Math.floor(count * 0.08); // 头部细节增加
+            const armCount = Math.floor(count * 0.25);
+            const bodyCount = count - headCount - armCount;
+
+            // 1. Head (Refined Oval shape with volume)
+            for(let i=0; i<headCount; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 1.9; // 略大的头部半径
+                // 椭球体拉伸模拟脸型
+                const x = r * 0.85 * Math.sin(phi) * Math.cos(theta);
+                const y = r * 1.15 * Math.sin(phi) * Math.sin(theta) + 16.5; // 提升头部高度
+                const z = r * 0.9 * Math.cos(phi) + 0.5; // 稍微前倾
+                points.push(new THREE.Vector3(x, y, z));
+            }
+
+            // 2. Arms (Outstretched, welcoming, draped sleeves)
+            for(let i=0; i<armCount; i++) {
+                const isRight = Math.random() > 0.5 ? 1 : -1;
+                const t = Math.random(); // 0 to 1 along arm
+                
+                // Shoulder pos
+                const sx = isRight * 3.0; 
+                const sy = 14.5;
+                const sz = 0.5;
+
+                // Hand pos (Outstretched & forward)
+                const hx = isRight * 17; // 翼展
+                const hy = 12.5; // 手比肩低
+                const hz = 6.0; // 向前伸出
+
+                // 线性插值 + 曲线
+                let px = sx + (hx - sx) * t;
+                let py = sy + (hy - sy) * t;
+                let pz = sz + (hz - sz) * t;
+
+                // 增加手臂“肉感”厚度
+                const thickness = 0.5 + (1-t) * 0.3; 
+                const rTheta = Math.random() * Math.PI * 2;
+                const rRad = Math.random() * thickness;
+                
+                // 袖子垂坠感 (Sleeves draping down)
+                // 在手臂中段增加向下的偏移
+                const sleeveDrop = (t > 0.1 && t < 0.8) ? Math.random() * (1.5 + Math.sin(t*Math.PI)*1.0) : 0;
+
+                px += Math.cos(rTheta) * rRad;
+                py += Math.sin(rTheta) * rRad - sleeveDrop;
+                pz += Math.cos(rTheta) * rRad;
+
+                points.push(new THREE.Vector3(px, py, pz));
+
+                // 额外生成手掌细节 (High density at tips)
+                if (t > 0.95 && Math.random() > 0.5) {
+                    points.push(new THREE.Vector3(
+                        px + (Math.random()-0.5), 
+                        py + (Math.random()-0.5), 
+                        pz + (Math.random()-0.5)
+                    ));
+                }
+            }
+
+            // 3. Robes & Body (Complex draping)
+            for(let i=0; i<bodyCount; i++) {
+                // Height from neck (14.5) down to feet (-20)
+                const t = Math.random(); 
+                const y = 14.5 - (t * 34.5); 
+                
+                // 基础身形曲线 (倒锥形+腰身)
+                let baseR = 3.2 + (t * 5.0); 
+                if (t < 0.15) baseR = 2.5 + (t * 8.0); // 肩膀宽
+                
+                // 褶皱逻辑 (Folds)
+                const angle = Math.random() * Math.PI * 2;
+                
+                // 长袍设计：左肩厚重，右侧稍薄 (Classic Toga style)
+                // 增加基于角度的半径变化来模拟布料堆积
+                let foldAmp = 0.6 + (t * 1.2); 
+                // 复杂的正弦波叠加模拟布料褶皱
+                let foldDetail = Math.sin(angle * 10) * 0.3 + Math.sin(angle * 3 + y*0.2) * 0.4;
+                
+                let r = baseR + foldDetail * foldAmp;
+
+                // 披风/Sash (斜向的布料)
+                // 从左肩 (高Y, 正X) 到 右腰 (中Y, 负X)
+                const sashPhase = (y + 20) / 35; // normalized height
+                // 简单的判断：如果在 Sash 的路径上，增加半径
+                // 路径大约是 x = 3 -> -3 随着 y 降低
+                const expectedSashX = 5 - (sashPhase * 10); 
+                const currentX = Math.cos(angle) * r;
+                
+                // 如果当前点在 sash 路径附近，往外推
+                if (Math.abs(currentX - expectedSashX) < 2.0 && t < 0.6) {
+                    r += 0.8 + Math.random()*0.5;
+                }
+
+                const px = Math.cos(angle) * r;
+                const pz = Math.sin(angle) * r * 0.8; // 稍微压扁一点，不那么圆
+                
+                points.push(new THREE.Vector3(px, y, pz));
+            }
+            return points;
+        }
+
+        // 辅助：Canvas 生成文字点云
+        function generateTextPoints(textStr) {
+            return new Promise(resolve => {
+                const cvs = document.createElement('canvas');
+                const size = 512;
+                cvs.width = size; cvs.height = size/2; // 宽一点
+                const ctx = cvs.getContext('2d');
+                
+                ctx.fillStyle = '#000'; ctx.fillRect(0,0,size,size/2);
+                ctx.fillStyle = '#fff'; 
+                ctx.font = 'bold 50px Cinzel'; // 字体
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const lines = textStr.split('\n');
+                lines.forEach((line, i) => {
+                    ctx.fillText(line, size/2, (size/4) + (i*60) - 20);
+                });
+
+                const data = ctx.getImageData(0,0,size,size/2).data;
+                const points = [];
+                const step = 4; // 采样步长，越小点越多
+
+                for(let y=0; y<size/2; y+=step) {
+                    for(let x=0; x<size; x+=step) {
+                        const alpha = data[(y*size + x)*4]; // 只检查alpha或者红色通道
+                        if(alpha > 128) {
+                            // 映射到 3D 空间
+                            // x: 0->512 => -30 -> 30
+                            // y: 0->256 => 20 -> -20 (反转Y)
+                            const px = (x / size) * 60 - 30;
+                            const py = -((y / (size/2)) * 30 - 15) - 22; // 放在耶稣脚下
+                            points.push(new THREE.Vector3(px, py, 5)); // 稍微靠前 z=5
+                        }
+                    }
+                }
+                resolve(points);
+            });
+        }
+
+        // --- Interaction Logic ---
+        function switchState(newState) {
+            if (currentMode === newState) return;
+            currentMode = newState;
+
+            // UI Update
+            document.getElementById('badge-tree').classList.toggle('state-active', newState === 'tree');
+            document.getElementById('badge-christus').classList.toggle('state-active', newState === 'christus');
+
+            const dur = 2000; // 动画时长
+
+            // 1. 处理树粒子
+            treeGroup.forEach(p => {
+                const target = newState === 'tree' ? p.treePos : p.scatterPos;
+                
+                new TWEEN.Tween(p.mesh.position)
+                    .to(target, dur)
+                    .easing(TWEEN.Easing.Cubic.InOut)
+                    .start();
+
+                // 树粒子在散开时稍微变暗，让主角（耶稣）更亮
+                if (!p.isPhoto) {
+                    const targetInt = newState === 'tree' ? (p.mesh.material.color.getHex() === CONFIG.colors.gold ? 0.8 : 0.2) : 0.1;
+                    new TWEEN.Tween(p.mesh.material)
+                        .to({ emissiveIntensity: targetInt }, dur)
+                        .start();
+                }
+            });
+
+            // 2. 处理圣灵粒子 (耶稣+文字)
+            spiritGroup.forEach(p => {
+                let targetScale, targetOpacity;
+                
+                if (newState === 'christus') {
+                    // 显示
+                    targetScale = 1; 
+                    targetOpacity = 1;
+                    
+                    // 粒子飞向目标位置
+                    new TWEEN.Tween(p.mesh.position)
+                        .to(p.targetPos, dur)
+                        .easing(TWEEN.Easing.Quintic.Out) // 快速飞出然后减速
+                        .delay(Math.random() * 500) // 稍微错开
+                        .start();
+
+                } else {
+                    // 隐藏
+                    targetScale = 0;
+                    targetOpacity = 0;
+                    
+                    // 粒子散开消失
+                    const randomHidePos = {
+                        x: (Math.random()-0.5)*20, 
+                        y: (Math.random()-0.5)*20, 
+                        z: (Math.random()-0.5)*20
+                    };
+                    new TWEEN.Tween(p.mesh.position)
+                        .to(randomHidePos, dur)
+                        .easing(TWEEN.Easing.Cubic.In)
+                        .start();
+                }
+
+                new TWEEN.Tween(p.mesh.scale)
+                    .to({x: targetScale, y: targetScale, z: targetScale}, dur)
+                    .start();
+                    
+                new TWEEN.Tween(p.mesh.material)
+                    .to({ opacity: targetOpacity }, dur)
+                    .start();
+            });
+        }
+
+        // --- Standard Logic ---
+        function onFileUpload(e) {
+            const files = e.target.files;
+            if(!files.length) return;
+            Array.from(files).forEach(f => {
+                const r = new FileReader();
+                r.onload = ev => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const tex = new THREE.Texture(img);
+                        tex.needsUpdate = true; tex.colorSpace = THREE.SRGBColorSpace;
+                        photoTextures.push(tex);
+                        updatePhotos();
+                    };
+                    img.src = ev.target.result;
+                };
+                r.readAsDataURL(f);
+            });
+        }
+
+        function updatePhotos() {
+            let idx = 0;
+            treeGroup.forEach(p => {
+                if(p.isPhoto && photoTextures.length) {
+                    p.mesh.material.map = photoTextures[idx % photoTextures.length];
+                    p.mesh.material.needsUpdate = true;
+                    idx++;
+                }
+            });
+        }
+
+        async function initMediaPipe() {
+            const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
+            hands.setOptions({
+                maxNumHands: 1,
+                modelComplexity: 1, 
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+            hands.onResults(onResults);
+            
+            const cameraObj = new Camera(videoInput, {
+                onFrame: async () => {
+                    if (videoInput.readyState >= 2) await hands.send({image: videoInput});
+                },
+                width: 320, height: 240, facingMode: 'user'
+            });
+            await cameraObj.start();
+        }
+
+        function onResults(res) {
+            if(!res.multiHandLandmarks.length) {
+                statusDot.classList.remove('bg-green-500', 'status-active');
+                return;
+            }
+            if(!isCameraReady) {
+                isCameraReady = true;
+                statusText.innerText = "GESTURE ACTIVE";
+                statusDot.classList.add('bg-green-500');
+                videoContainer.style.opacity = 0.5;
+            }
+
+            const lm = res.multiHandLandmarks[0];
+            let openFingers = 0;
+            // 简单的手指伸展检测
+            [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
+            
+            // Logic: 4个以上手指伸直 = 张手
+            if (openFingers >= 4) switchState('christus');
+            else switchState('tree');
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.02;
+            TWEEN.update();
+
+            // 旋转逻辑
+            if (currentMode === 'tree') {
+                scene.rotation.y += 0.003; // 树模式自转
+            } else {
+                // 异象模式：缓慢回正或微动，不剧烈旋转，方便看清文字
+                scene.rotation.y += (0 - scene.rotation.y) * 0.03; 
+            }
+
+            // 粒子闪烁
+            // 1. 树粒子
+            treeGroup.forEach(p => {
+                if (!p.isPhoto) {
+                    const blink = Math.sin(time * p.blinkSpeed + p.blinkOffset);
+                    // 保持基础亮度，添加闪烁波动
+                    const baseInt = currentMode === 'tree' ? 
+                        (p.mesh.material.color.getHex() === CONFIG.colors.gold ? 0.8 : 0.3) : 0.1;
+                    p.mesh.material.emissiveIntensity = baseInt + (blink * 0.3);
+                }
+            });
+
+            // 2. 圣灵粒子 (只有在显示时才闪烁计算)
+            if (currentMode === 'christus') {
+                spiritGroup.forEach(p => {
+                    const blink = Math.sin(time * p.blinkSpeed * 3 + p.blinkOffset); // 闪烁更快更神圣
+                    p.mesh.material.emissiveIntensity = 1.0 + (blink * 0.6); // 极亮波动
+                });
+            }
+
+            composer.render();
+        }
+
+        init();
+    </script>
+</body>
+</html>
