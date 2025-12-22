@@ -248,8 +248,17 @@
 
         window.startExperience = () => {
             toggleHelp();
-            // Try to start music on first interaction
-            toggleMusic(); 
+            // 修复 Bug：只确保音乐播放，而不切换（避免误关）
+            if(!audio) audio = document.getElementById('bg-music');
+            
+            if (audio.paused) {
+                // 如果没播放，则播放
+                toggleMusic();
+            } else {
+                // 如果已经在播放，确保按钮状态是激活的，不做暂停操作
+                musicBtn.classList.add('music-active');
+                musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
+            }
         };
 
         async function init() {
