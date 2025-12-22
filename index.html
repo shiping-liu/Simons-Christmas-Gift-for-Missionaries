@@ -15,35 +15,25 @@
             font-family: 'Cinzel', serif;
             touch-action: none; 
         }
-        
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300&display=swap');
-
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        
         #video-container {
             position: absolute; top: 16px; right: 16px; width: 80px; height: 106px; 
             border-radius: 12px; overflow: hidden; z-index: 10;
             border: 1px solid rgba(255, 215, 0, 0.3);
-            background: #000;
-            opacity: 0; transition: opacity 0.5s;
-            pointer-events: none;
+            background: #000; opacity: 0; transition: opacity 0.5s; pointer-events: none;
         }
         #video-input { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-
         .glass-panel {
-            background: rgba(10, 25, 30, 0.75); 
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
+            background: rgba(10, 25, 30, 0.75); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.7);
         }
-
         #loading {
             position: fixed; inset: 0; background: #000; z-index: 100; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             transition: opacity 1s ease-out;
         }
-
         .state-badge {
             font-size: 0.7rem; padding: 4px 8px; border-radius: 4px;
             background: rgba(255,255,255,0.05); color: #888; transition: all 0.3s;
@@ -60,23 +50,20 @@
 
     <div id="loading">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500 mb-6"></div>
-        <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">LIGHT THE WORLD</div>
+        <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em]">LIGHT THE WORLD</div>
+        <p class="text-gray-500 text-xs mt-4">Loading 3D Vision...</p>
     </div>
 
     <div id="canvas-container"></div>
+    <video id="video-input" class="hidden" playsinline muted autoplay></video>
+    <div id="video-container"><video id="video-display" width="320" height="240" playsinline muted autoplay></video></div>
 
-    <div id="video-container">
-        <video id="video-input" width="320" height="240" playsinline muted autoplay></video>
-    </div>
-
-    <!-- UI Overlay -->
     <div class="absolute inset-0 pointer-events-none flex flex-col justify-between z-20">
-        <!-- Header -->
         <div class="p-4 mt-2 flex justify-between items-start">
             <div class="glass-panel px-4 py-3 flex flex-col gap-2 min-w-[170px]">
                 <div class="flex items-center gap-3 border-b border-white/10 pb-2 mb-1">
-                    <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500 transition-all duration-500 shadow-[0_0_5px_rgba(0,0,0,0.5)]"></div>
-                    <span id="status-text" class="text-xs font-bold text-gray-200 tracking-wider">SYSTEM READY</span>
+                    <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500"></div>
+                    <span id="status-text" class="text-xs font-bold text-gray-200">SYSTEM READY</span>
                 </div>
                 <div class="flex flex-col gap-1.5">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
@@ -84,56 +71,30 @@
                     <div id="badge-zoom" class="state-badge"><span>👌</span> Zoom</div>
                 </div>
             </div>
-            
-            <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
-                <i class="fa-solid fa-question text-lg"></i>
-            </button>
+            <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto"><i class="fa-solid fa-question"></i></button>
         </div>
 
-        <!-- Footer -->
         <div class="p-6 w-full pointer-events-auto flex justify-center pb-10">
-            <label class="glass-panel px-8 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-t from-transparent to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i class="fa-solid fa-images text-white text-xl relative z-10"></i>
-                </div>
+            <label class="glass-panel px-8 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/10 transition-all group">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg"><i class="fa-solid fa-images text-white text-xl"></i></div>
                 <div class="text-left">
-                    <div class="text-xs text-gray-300 uppercase tracking-wider font-semibold">Memories</div>
-                    <div class="text-base font-bold text-white drop-shadow-sm">Upload Photos</div>
+                    <div class="text-xs text-gray-300 uppercase">Memories</div>
+                    <div class="text-base font-bold text-white">Upload Photos</div>
                 </div>
                 <input type="file" id="file-input" class="hidden" multiple accept="image/*">
             </label>
         </div>
     </div>
 
-    <!-- Help Modal -->
-    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg opacity-1 pointer-events-auto transition-opacity duration-500">
-        <div class="glass-panel p-8 max-w-md w-4/5 text-center transform scale-100 transition-transform border-yellow-500/20" id="help-box">
-            <h3 class="text-yellow-400 font-serif text-2xl mb-6 tracking-[0.15em] border-b border-yellow-500/20 pb-4 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">GESTURE GUIDE</h3>
+    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg opacity-0 pointer-events-none transition-opacity duration-500">
+        <div class="glass-panel p-8 max-w-md w-4/5 text-center">
+            <h3 class="text-yellow-400 font-serif text-2xl mb-6">GESTURE GUIDE</h3>
             <div class="space-y-6 text-left pl-2">
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✊</div>
-                    <div>
-                        <div class="text-white font-bold text-lg mb-0.5">FIST</div>
-                        <div class="text-gray-400 text-sm">Show the Christmas Tree</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">🖐</div>
-                    <div>
-                        <div class="text-white font-bold text-lg mb-0.5">OPEN HAND</div>
-                        <div class="text-gray-400 text-sm">Reveal the Vision (Move hand to rotate)</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">👌</div>
-                    <div>
-                        <div class="text-white font-bold text-lg mb-0.5">PINCH</div>
-                        <div class="text-gray-400 text-sm">Zoom in on Memories</div>
-                    </div>
-                </div>
+                <div class="flex items-center gap-5"><span>✊</span> <div><b class="text-white">FIST</b>: Christmas Tree</div></div>
+                <div class="flex items-center gap-5"><span>🖐</span> <div><b class="text-white">OPEN HAND</b>: The Vision</div></div>
+                <div class="flex items-center gap-5"><span>👌</span> <div><b class="text-white">PINCH</b>: Zoom Memories</div></div>
             </div>
-            <button onclick="toggleHelp()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
+            <button onclick="toggleHelp()" class="mt-8 px-10 py-3 bg-yellow-700 text-white font-bold rounded-xl w-full pointer-events-auto">BEGIN</button>
         </div>
     </div>
 
@@ -146,699 +107,174 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
     <script type="module">
         import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         import TWEEN from 'three/addons/libs/tween.module.js';
 
-        // --- Configuration ---
         const CONFIG = {
-            treeParticles: 2200,    // 粒子数量
-            spiritParticles: 7500,  // 稍微减少总粒子数以提高清晰度
-            photoCount: 12,         
-            treeHeight: 65,
-            treeRadius: 28,
-            colors: {
-                matteGreen: 0x005522,
-                gold: 0xffcc00,
-                red: 0xcc0000,
-                spiritGold: 0xffeebb
-            }
+            treeParticles: 2000,
+            spiritParticles: 8000, // 采样粒子数
+            colors: { matteGreen: 0x005522, gold: 0xffcc00, red: 0xcc0000, spiritGold: 0xffeebb }
         };
 
-        let scene, camera, renderer, composer;
-        let mainGroup = new THREE.Group(); 
-        let treeGroup = [];   
-        let spiritGroup = []; 
-        let photoTextures = [];
-        let defaultPhotoTexture;
-        let currentMode = 'tree'; 
-        let time = 0;
-        let isCameraReady = false;
-        let rotatingPointLight;
-        
-        // Hand Tracking State
-        let targetRotationX = 0;
-        let targetRotationY = 0;
-        let pinchStrength = 0;
-        let zoomLevel = 1.0;
+        let scene, camera, renderer, composer, mainGroup = new THREE.Group();
+        let treeGroup = [], spiritGroup = [], currentMode = 'tree', isCameraReady = false;
+        let targetRotationX = 0, targetRotationY = 0, time = 0;
 
-        // UI Refs
+        const videoInput = document.getElementById('video-input');
         const statusText = document.getElementById('status-text');
         const statusDot = document.getElementById('status-dot');
-        const videoContainer = document.getElementById('video-container');
-        const loadingScreen = document.getElementById('loading');
-        const videoInput = document.getElementById('video-input');
-        
+
         window.toggleHelp = () => {
             const el = document.getElementById('help-modal');
-            const box = document.getElementById('help-box');
-            if (el.style.opacity === '1') {
-                el.style.opacity = '0'; el.style.pointerEvents = 'none'; box.style.transform = 'scale(0.95)';
-            } else {
-                el.style.opacity = '1'; el.style.pointerEvents = 'auto'; box.style.transform = 'scale(1)';
-            }
+            el.style.opacity = el.style.opacity === '1' ? '0' : '1';
+            el.style.pointerEvents = el.style.opacity === '1' ? 'auto' : 'none';
         };
 
         async function init() {
             initThree();
-            generateDefaultTexture();
-            
             createTreeSystem();
-            await createSpiritSystem();
-
+            await createSpiritSystem(); // 这里会加载你的 jesus_model.glb
             animate();
-
-            // Hide loading
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => loadingScreen.remove(), 1500);
-
-            // Init Vision
-            statusText.innerText = "INITIALIZING VISION...";
-            try {
-                await initMediaPipe();
-            } catch (e) {
-                console.error("Camera failed:", e);
-                statusText.innerText = "MANUAL MODE";
-                statusDot.classList.add('bg-red-500');
-            }
+            document.getElementById('loading').style.opacity = '0';
+            setTimeout(() => document.getElementById('loading').remove(), 1000);
+            initMediaPipe().catch(() => statusText.innerText = "MANUAL MODE");
         }
 
         function initThree() {
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x020a0f, 0.012);
-
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 12, 100);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            camera.position.set(0, 10, 80);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.3;
+            renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-            const renderScene = new RenderPass(scene, camera);
-            // Bloom parameters optimized to avoid washing out details
-            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.4, 0.85);
-            bloomPass.threshold = 0.15; // Slightly higher threshold to keep dark areas dark
             
             composer = new EffectComposer(renderer);
-            composer.addPass(renderScene);
-            composer.addPass(bloomPass);
-
-            scene.add(new THREE.AmbientLight(0x333344)); 
-            const sunLight = new THREE.DirectionalLight(0xffddaa, 1.5);
-            sunLight.position.set(20, 50, 30);
-            scene.add(sunLight);
-
-            const bottomLight = new THREE.PointLight(0xffaa55, 4, 80);
-            bottomLight.position.set(0, -30, 15);
-            scene.add(bottomLight);
-
-            rotatingPointLight = new THREE.PointLight(0x00ffaa, 3, 60);
-            rotatingPointLight.position.set(30, 10, 0);
-            scene.add(rotatingPointLight);
+            composer.addPass(new RenderPass(scene, camera));
+            composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85));
             
+            scene.add(new THREE.AmbientLight(0x444444));
             scene.add(mainGroup);
-
-            window.addEventListener('resize', onResize);
-            document.getElementById('file-input').addEventListener('change', onFileUpload);
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
 
-        function generateDefaultTexture() {
-            const cvs = document.createElement('canvas');
-            cvs.width = 256; cvs.height = 256; 
-            const ctx = cvs.getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 256, 256);
-            gradient.addColorStop(0, '#fff');
-            gradient.addColorStop(1, '#eee');
-            ctx.fillStyle = gradient; ctx.fillRect(0,0,256,256);
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = '#C5A000'; ctx.strokeRect(4,4,248,248);
-            ctx.fillStyle = '#C5A000'; ctx.fillRect(12,12,232,232);
-            ctx.fillStyle = '#fff'; ctx.font = '100px serif';
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText('✝', 128, 128);
-            defaultPhotoTexture = new THREE.CanvasTexture(cvs);
-        }
-
-        // --- System 1: Tree with Mid-Section Photos ---
         function createTreeSystem() {
-            const geo = new THREE.IcosahedronGeometry(0.7, 0); 
-            const geoSmall = new THREE.IcosahedronGeometry(0.4, 0); 
-            const geoPhoto = new THREE.PlaneGeometry(5.0, 6.0); 
-
-            const matGreen = new THREE.MeshPhysicalMaterial({
-                color: CONFIG.colors.matteGreen, roughness: 0.5, metalness: 0.3,
-                emissive: CONFIG.colors.matteGreen, emissiveIntensity: 0.3, 
-                clearcoat: 0.5
-            });
-            const matRed = new THREE.MeshPhysicalMaterial({
-                color: CONFIG.colors.red, roughness: 0.2, metalness: 0.6,
-                emissive: CONFIG.colors.red, emissiveIntensity: 0.8,
-                clearcoat: 0.8
-            });
-            const matGold = new THREE.MeshPhysicalMaterial({
-                color: CONFIG.colors.gold, roughness: 0.1, metalness: 1.0,
-                emissive: CONFIG.colors.gold, emissiveIntensity: 1.2,
-                clearcoat: 1.0
-            });
-            
-            const photoIndices = new Set();
-            while(photoIndices.size < CONFIG.photoCount) {
-                const idx = Math.floor(Math.random() * (CONFIG.treeParticles * 0.5)) + (CONFIG.treeParticles * 0.25);
-                photoIndices.add(idx);
-            }
-
-            for(let i = 0; i < CONFIG.treeParticles; i++) {
-                let mesh, mat;
-                let isPhoto = photoIndices.has(i);
-                let baseScale = 1;
-                
+            const geo = new THREE.IcosahedronGeometry(0.5, 0);
+            for(let i=0; i<CONFIG.treeParticles; i++) {
                 const p = i / CONFIG.treeParticles;
-                const h = CONFIG.treeHeight;
-                const angle = p * Math.PI * 30 + i * 0.1;
-                const r = Math.pow((1 - p), 0.8) * CONFIG.treeRadius;
-                const y = (p * h) - (h / 2);
-
-                if (isPhoto) {
-                    mat = new THREE.MeshPhysicalMaterial({
-                        map: defaultPhotoTexture, side: THREE.DoubleSide,
-                        roughness: 0.3, metalness: 0.2, clearcoat: 0.4,
-                        emissive: 0x000000, emissiveIntensity: 0
-                    });
-                    mesh = new THREE.Mesh(geoPhoto, mat);
-                } else {
-                    const rand = Math.random();
-                    if (rand > 0.82) { mat = matGold; baseScale = Math.random()*0.6 + 0.3; }
-                    else if (rand > 0.70) { mat = matRed; baseScale = Math.random()*0.7 + 0.5; }
-                    else { mat = matGreen; baseScale = Math.random()*0.8 + 0.6; }
-                    
-                    const g = Math.random() > 0.3 ? geo : geoSmall;
-                    mesh = new THREE.Mesh(g, mat.clone());
-                    mesh.scale.set(baseScale, baseScale, baseScale);
-                }
-
-                const jitter = 2.0; 
-                const tx = Math.cos(angle) * r + (Math.random()-0.5)*jitter;
-                const tz = Math.sin(angle) * r + (Math.random()-0.5)*jitter;
-                const treePos = new THREE.Vector3(tx, y, tz);
-
-                const dist = Math.sqrt(tx*tx + tz*tz);
-                const scatterFactor = 40 / (dist + 0.5) + 1.8; 
-                const scatterPos = treePos.clone();
-                scatterPos.x *= scatterFactor;
-                scatterPos.z *= scatterFactor;
-                scatterPos.y *= 1.2; 
-                const scatterRot = new THREE.Euler(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-
-                mesh.position.copy(treePos);
-                
-                if(isPhoto) {
-                    mesh.lookAt(tx*2, y, tz*2); 
-                } else {
-                    mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-                }
-
+                const r = (1-p) * 25;
+                const y = p * 60 - 30;
+                const angle = p * Math.PI * 20;
+                const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: CONFIG.colors.gold }));
+                mesh.position.set(Math.cos(angle)*r, y, Math.sin(angle)*r);
                 mainGroup.add(mesh);
-                
-                treeGroup.push({
-                    mesh,
-                    treePos, treeRot: mesh.rotation.clone(),
-                    scatterPos, scatterRot,
-                    isPhoto,
-                    baseEmissive: mat.emissiveIntensity,
-                    blinkSpeed: Math.random() * 0.08 + 0.03,
-                    blinkOffset: Math.random() * Math.PI * 2,
-                    blinkPhase: Math.random() * Math.PI 
-                });
+                treeGroup.push({ mesh, treePos: mesh.position.clone(), scatterPos: new THREE.Vector3((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100) });
             }
-
-            // Star
-            const starGeo = new THREE.OctahedronGeometry(3.0, 0);
-            const starMat = new THREE.MeshPhysicalMaterial({
-                color: 0xffffff, emissive: 0xffee88, emissiveIntensity: 4.0, roughness: 0.1, metalness: 1.0
-            });
-            const star = new THREE.Mesh(starGeo, starMat);
-            const starY = (CONFIG.treeHeight/2) + 3;
-            star.position.set(0, starY, 0);
-            mainGroup.add(star);
-            
-            const starLight = new THREE.PointLight(0xffee88, 2, 30);
-            starLight.position.copy(star.position);
-            mainGroup.add(starLight);
-
-            treeGroup.push({
-                mesh: star,
-                treePos: new THREE.Vector3(0, starY, 0), treeRot: new THREE.Euler(0,0,0),
-                scatterPos: new THREE.Vector3(0, starY + 20, 0), scatterRot: new THREE.Euler(Math.PI/4, Math.PI/4, 0),
-                isPhoto: false,
-                baseEmissive: 4.0,
-                blinkSpeed: 0.02, blinkOffset: 0, blinkPhase: 0
-            });
         }
 
         async function createSpiritSystem() {
-            const matSpirit = new THREE.MeshPhysicalMaterial({
-                color: 0xffffff, roughness: 0.3, metalness: 1.0,
-                emissive: CONFIG.colors.spiritGold, emissiveIntensity: 1.5,
-                clearcoat: 0.8, transparent: true, opacity: 0
-            });
-            
-            const geoNormal = new THREE.BoxGeometry(0.2, 0.2, 0.2); 
-            // Smaller particles for finer details
-            const geoSmall = new THREE.BoxGeometry(0.08, 0.08, 0.08); 
+            const loader = new GLTFLoader();
+            try {
+                // 加载你的 GLB 文件
+                const gltf = await loader.loadAsync('jesus_model.glb');
+                let modelMesh;
+                gltf.scene.traverse(child => { if(child.isMesh) modelMesh = child; });
 
-            const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!"); 
-            
-            const bodyCount = Math.floor((CONFIG.spiritParticles - textPoints.length) * 0.85);
-            // Reduced head count to avoid clutter, focused on precision
-            const headDetailCount = CONFIG.spiritParticles - textPoints.length - bodyCount;
+                const sampler = new MeshSurfaceSampler(modelMesh).build();
+                const matSpirit = new THREE.MeshPhysicalMaterial({ color: 0xffffff, emissive: CONFIG.colors.spiritGold, transparent: true, opacity: 0 });
+                const boxGeo = new THREE.BoxGeometry(0.15, 0.15, 0.15);
 
-            const bodyPoints = generateChristusBody_Replica(bodyCount);
-            const headPoints = generateChristusHead_Fix(headDetailCount);
+                for(let i=0; i<CONFIG.spiritParticles; i++) {
+                    const tempPos = new THREE.Vector3();
+                    sampler.sample(tempPos);
+                    
+                    const mesh = new THREE.Mesh(boxGeo, matSpirit.clone());
+                    // 初始位置随机
+                    mesh.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+                    mesh.scale.set(0,0,0);
+                    mainGroup.add(mesh);
 
-            const allPoints = [...bodyPoints, ...headPoints, ...textPoints];
-
-            allPoints.forEach(pt => {
-                const isDetail = pt.userData && pt.userData.isDetail;
-                const mesh = new THREE.Mesh(isDetail ? geoSmall : geoNormal, matSpirit.clone());
-                
-                if (isDetail) {
-                    // Lower intensity slightly to prevent detail washout
-                    mesh.material.emissiveIntensity = 1.8; 
+                    spiritGroup.push({
+                        mesh,
+                        targetPos: tempPos.clone().multiplyScalar(15).add(new THREE.Vector3(0, -10, 0)), // 放大并微调位置
+                        blinkOffset: Math.random() * Math.PI * 2
+                    });
                 }
-                
-                mesh.position.set((Math.random()-0.5)*40, (Math.random()-0.5)*40, (Math.random()-0.5)*40);
-                mesh.scale.set(0,0,0);
-                mainGroup.add(mesh);
-
-                spiritGroup.push({
-                    mesh,
-                    targetPos: pt.clone(), 
-                    blinkSpeed: (Math.random() * 0.1 + 0.1) * (isDetail ? 1.5 : 1),
-                    blinkOffset: Math.random() * Math.PI * 2,
-                    baseEmissive: mesh.material.emissiveIntensity
-                });
-            });
-        }
-
-        // --- 核心算法 4.0：Christus Head Clarity (清晰度优化) ---
-        function generateChristusHead_Fix(count) {
-            const points = [];
-            const headCenter = new THREE.Vector3(0, 17.0, 1.2); 
-            
-            for(let i=0; i<count; i++) {
-                const r = Math.random();
-                const pt = new THREE.Vector3();
-                let isDetail = false;
-
-                if (r < 0.20) { 
-                    // --- Face Mask (Key Features Only) ---
-                    // Reducing noise by focusing only on defining features
-                    const theta = (Math.random() - 0.5) * Math.PI * 0.7; 
-                    const phi = Math.random() * Math.PI * 0.4 + 0.2; 
-                    
-                    const rad = 2.0;
-                    let rMod = 0;
-                    
-                    // Stronger sculpting for clarity (negative space)
-                    // Deepen eye sockets (Don't generate points inside sockets)
-                    const isEyeSocket = Math.abs(theta) > 0.2 && Math.abs(theta) < 0.5 && phi > 0.45 && phi < 0.6;
-                    
-                    if (isEyeSocket) {
-                         // Skip point generation here creates shadow
-                         continue; 
-                    }
-                    
-                    // Nose prominence
-                    if (Math.abs(theta) < 0.15 && phi > 0.4 && phi < 0.8) rMod += 0.5 * (0.8-phi);
-                    // Brow ridge prominence
-                    if (phi > 0.4 && phi < 0.45) rMod += 0.2;
-                    // Cheekbones
-                    if (Math.abs(theta) > 0.5 && phi > 0.6 && phi < 0.8) rMod += 0.1;
-
-                    let x = (rad + rMod) * Math.sin(phi) * Math.sin(theta);
-                    let y = (rad + rMod) * Math.cos(phi);
-                    let z = (rad + rMod) * Math.sin(phi) * Math.cos(theta);
-                    
-                    pt.set(x, y, z);
-                    pt.add(headCenter);
-                    rotatePointAroundX(pt, headCenter, 0.2);
-                    isDetail = true;
-
-                } else if (r < 0.60) {
-                    // --- Hair (Parting) ---
-                    const theta = Math.random() * Math.PI * 2;
-                    let phi = Math.random() * Math.PI * 0.5; 
-                    
-                    const skullRad = 2.05;
-                    const hairThick = 0.2 + Math.random() * 0.2; // Less random thickness
-                    
-                    let xVal = skullRad * Math.sin(phi) * Math.sin(theta);
-                    // Sharp Parting
-                    if (Math.abs(xVal) < 0.2 && phi < 0.8) {
-                        continue; // Clear parting line
-                    }
-
-                    let x = (skullRad + hairThick) * Math.sin(phi) * Math.sin(theta);
-                    let y = (skullRad + hairThick) * Math.cos(phi);
-                    let z = (skullRad + hairThick) * Math.sin(phi) * Math.cos(theta);
-
-                    if (z < 0.5 || Math.abs(x) > 1.5) {
-                        const drop = Math.random() * 3.5; 
-                        y -= drop;
-                        if (y < -1.5) {
-                            x *= (1.0 + ((-1.5 - y) * 0.3));
-                            z *= 1.1;
-                        }
-                    }
-
-                    pt.set(x, y, z);
-                    pt.add(headCenter);
-                    rotatePointAroundX(pt, headCenter, 0.2);
-
-                } else {
-                    // --- Beard ---
-                    const t = Math.random(); 
-                    const startY = headCenter.y - 0.5; 
-                    const endY = headCenter.y - 4.5;   
-                    const curY = startY + (endY - startY) * t;
-                    
-                    const width = 1.6 - (t * 0.3); 
-                    const angle = (Math.random() - 0.5) * Math.PI * 0.8; 
-                    
-                    // Beard Definition
-                    let depth = 1.8 + (Math.sin(t * Math.PI) * 0.5); 
-                    
-                    let x = Math.sin(angle) * width;
-                    let z = Math.cos(angle) * depth;
-                    
-                    if (t < 0.1) z *= 0.9; 
-
-                    pt.set(x, curY - 17.0 + headCenter.y, z + 1.2); 
-                }
-
-                pt.userData = { isDetail }; 
-                points.push(pt);
+            } catch (e) {
+                console.error("GLB Load Error: Make sure jesus_model.glb is in the root folder", e);
             }
-            return points;
-        }
-
-        function rotatePointAroundX(point, pivot, angle) {
-            const cos = Math.cos(angle);
-            const sin = Math.sin(angle);
-            const dy = point.y - pivot.y;
-            const dz = point.z - pivot.z;
-            point.y = pivot.y + dy * cos - dz * sin;
-            point.z = pivot.z + dy * sin + dz * cos;
-        }
-
-        // --- Arm Logic Update: Natural Elbow Bend ---
-        function generateChristusBody_Replica(count) {
-            const points = [];
-            const shoulderY = 13.5;
-            const handsCount = Math.floor(count * 0.22); 
-            const bodyCount = count - handsCount;
-
-            for(let i=0; i<handsCount; i++) {
-                const isRight = Math.random() > 0.5;
-                const side = isRight ? 1 : -1;
-                const t = Math.random(); 
-                
-                // Key Joints
-                const shoulder = new THREE.Vector3(side * 2.5, shoulderY, 0);
-                const elbow = new THREE.Vector3(side * 9.0, shoulderY - 2.5, 4.0); // Elbow out and forward
-                const hand = new THREE.Vector3(side * 15.0, shoulderY + 1.0, 8.0); // Hand higher, more forward
-
-                const pt = new THREE.Vector3();
-                let r = 0.5 + (1-t)*0.4; if (!isRight) r += 0.5; 
-
-                // Quadratic Bezier for Arm Curve
-                if (t < 0.5) {
-                    // Shoulder to Elbow (0 to 0.5 maps to 0 to 1)
-                    const subT = t * 2;
-                    pt.lerpVectors(shoulder, elbow, subT);
-                } else {
-                    // Elbow to Hand (0.5 to 1 maps to 0 to 1)
-                    const subT = (t - 0.5) * 2;
-                    pt.lerpVectors(elbow, hand, subT);
-                }
-
-                // Sleeve drape
-                const sleeveDrop = t * t * 2.0 * Math.sin(t * Math.PI); 
-                pt.y -= Math.random() * sleeveDrop;
-
-                if (t > 0.92) {
-                    // Hands - Palm Up Gesture
-                    const handSpread = (Math.random()-0.5) * 1.5;
-                    pt.x += handSpread;
-                    pt.z += (Math.random() - 0.5) * 0.5;
-                    pt.y += (Math.random() * 0.5); // Thickness
-                    if (Math.random() > 0.95) { 
-                        pt.userData = { isDetail: true }; 
-                    }
-                } else {
-                    // Arm volume
-                    const ang = Math.random() * Math.PI * 2;
-                    pt.x += Math.cos(ang)*r;
-                    pt.y += Math.sin(ang)*r*0.8;
-                    pt.z += Math.sin(ang)*r;
-                }
-                points.push(pt);
-            }
-
-            for(let i=0; i<bodyCount; i++) {
-                const t = Math.random(); const y = 14 - (t * 32); 
-                let r = 3.0 + (t * 3.5); const angle = Math.random() * Math.PI * 2; 
-                let robeThick = 0;
-                if (t < 0.2 && Math.cos(angle) < -0.2) robeThick += 1.5;
-                const xLoc = Math.cos(angle) * r; const sashY = -1.5 * xLoc + 5; 
-                if (Math.abs(y - sashY) < 3.0 && y > 0 && Math.sin(angle) > 0) robeThick += 1.0; 
-                if (t > 0.9) robeThick += Math.sin(angle * 8) * 0.8 + 1.0; 
-                robeThick += Math.sin(angle * 12) * 0.2; r += robeThick;
-                let zScale = 0.8; if (y > 5 && y < 13 && Math.cos(angle) > 0.2 && Math.sin(angle) > 0) r *= 0.8; 
-                points.push(new THREE.Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r * zScale));
-            }
-            return points;
-        }
-
-        function generateTextPoints(textStr) {
-            return new Promise(resolve => {
-                const cvs = document.createElement('canvas');
-                const sizeW = 1024; const sizeH = 256;
-                cvs.width = sizeW; cvs.height = sizeH; 
-                const ctx = cvs.getContext('2d');
-                ctx.fillStyle = '#000'; ctx.fillRect(0,0,sizeW,sizeH);
-                ctx.fillStyle = '#fff'; ctx.font = 'bold 48px Cinzel'; 
-                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                const lines = textStr.split('\n');
-                lines.forEach((line, i) => { ctx.fillText(line, sizeW/2, (sizeH/2) + (i*60) - 30); });
-                const data = ctx.getImageData(0,0,sizeW,sizeH).data;
-                const points = [];
-                const step = 4; 
-                for(let y=0; y<sizeH; y+=step) {
-                    for(let x=0; x<sizeW; x+=step) {
-                        const alpha = data[(y*sizeW + x)*4]; 
-                        if(alpha > 128) {
-                            const px = (x / sizeW) * 80 - 40;
-                            const py = -((y / sizeH) * 20 - 10) - 26; 
-                            const pt = new THREE.Vector3(px, py, 12);
-                            if (alpha < 200 || Math.random() > 0.8) pt.userData = { isDetail: true };
-                            points.push(pt);
-                        }
-                    }
-                }
-                resolve(points);
-            });
         }
 
         function switchState(newState) {
             if (currentMode === newState) return;
             currentMode = newState;
+            const dur = 1500;
 
-            document.getElementById('badge-tree').classList.toggle('state-active', newState === 'tree');
-            document.getElementById('badge-christus').classList.toggle('state-active', newState === 'christus');
-            document.getElementById('badge-zoom').classList.toggle('state-active', newState === 'zoom');
-
-            const dur = 2000; 
+            document.getElementById('badge-tree').className = `state-badge ${newState==='tree'?'state-active':''}`;
+            document.getElementById('badge-christus').className = `state-badge ${newState==='christus'?'state-active':''}`;
+            document.getElementById('badge-zoom').className = `state-badge ${newState==='zoom'?'state-active':''}`;
 
             treeGroup.forEach(p => {
-                let target, targetRot;
-                if (newState === 'tree') {
-                    target = p.treePos; targetRot = p.treeRot;
-                } else if (newState === 'zoom' && p.isPhoto) {
-                    target = p.scatterPos.clone().multiplyScalar(0.5); target.z += 20; 
-                    targetRot = new THREE.Euler(0, 0, 0); 
-                } else {
-                    target = p.scatterPos; targetRot = p.scatterRot;
-                }
-                new TWEEN.Tween(p.mesh.position).to(target, dur).easing(TWEEN.Easing.Quintic.InOut).start();
-                if (p.isPhoto && newState === 'zoom') {
-                    new TWEEN.Tween(p.mesh.rotation).to({x:0, y:0, z:0}, dur).start();
-                    new TWEEN.Tween(p.mesh.scale).to({x:2, y:2, z:2}, dur).start();
-                } else {
-                    new TWEEN.Tween(p.mesh.rotation).to({x: targetRot.x, y: targetRot.y, z: targetRot.z}, dur).easing(TWEEN.Easing.Quintic.InOut).start();
-                    new TWEEN.Tween(p.mesh.scale).to({x:1, y:1, z:1}, dur).start();
-                }
-                if (!p.isPhoto) {
-                    const targetInt = newState === 'tree' ? p.baseEmissive : p.baseEmissive * 1.5; 
-                    new TWEEN.Tween(p.mesh.material).to({ emissiveIntensity: targetInt }, dur).start();
-                }
+                const target = newState === 'tree' ? p.treePos : p.scatterPos;
+                new TWEEN.Tween(p.mesh.position).to(target, dur).easing(TWEEN.Easing.Quadratic.InOut).start();
+                new TWEEN.Tween(p.mesh.scale).to(newState==='tree'?{x:1,y:1,z:1}:{x:0,y:0,z:0}, 500).start();
             });
 
             spiritGroup.forEach(p => {
-                let targetScale, targetOpacity;
-                if (newState === 'christus') {
-                    targetScale = 1; targetOpacity = 1;
-                    new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur).easing(TWEEN.Easing.Quintic.Out).delay(Math.random() * 600).start();
+                if(newState === 'christus') {
+                    new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur + Math.random()*1000).easing(TWEEN.Easing.Exponential.Out).start();
+                    new TWEEN.Tween(p.mesh.scale).to({x:1,y:1,z:1}, 1000).start();
+                    new TWEEN.Tween(p.mesh.material).to({opacity:1}, 1000).start();
                 } else {
-                    targetScale = 0; targetOpacity = 0;
-                    const randomHidePos = { x: (Math.random()-0.5)*50, y: (Math.random()-0.5)*50+20, z: (Math.random()-0.5)*50 };
-                    new TWEEN.Tween(p.mesh.position).to(randomHidePos, dur).easing(TWEEN.Easing.Cubic.In).start();
-                }
-                new TWEEN.Tween(p.mesh.scale).to({x: targetScale, y: targetScale, z: targetScale}, dur).start();
-                new TWEEN.Tween(p.mesh.material).to({ opacity: targetOpacity }, dur).start();
-            });
-        }
-
-        function onFileUpload(e) {
-            const files = e.target.files;
-            if(!files.length) return;
-            Array.from(files).forEach(f => {
-                const r = new FileReader();
-                r.onload = ev => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const tex = new THREE.Texture(img);
-                        tex.needsUpdate = true; tex.colorSpace = THREE.SRGBColorSpace;
-                        photoTextures.push(tex);
-                        updatePhotos();
-                    };
-                    img.src = ev.target.result;
-                };
-                r.readAsDataURL(f);
-            });
-        }
-
-        function updatePhotos() {
-            let idx = 0;
-            treeGroup.forEach(p => {
-                if(p.isPhoto && photoTextures.length) {
-                    p.mesh.material.map = photoTextures[idx % photoTextures.length];
-                    p.mesh.material.needsUpdate = true;
-                    idx++;
+                    new TWEEN.Tween(p.mesh.scale).to({x:0,y:0,z:0}, 500).start();
+                    new TWEEN.Tween(p.mesh.material).to({opacity:0}, 500).start();
                 }
             });
         }
 
         async function initMediaPipe() {
             const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-            hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-            hands.onResults(onResults);
-            const cameraObj = new Camera(videoInput, {
-                onFrame: async () => { if (videoInput.readyState >= 2) await hands.send({image: videoInput}); },
-                width: 320, height: 240, facingMode: 'user'
-            });
-            await cameraObj.start();
-        }
-
-        function onResults(res) {
-            if(!res.multiHandLandmarks.length) {
-                statusDot.classList.remove('bg-green-500', 'status-active');
-                return;
-            }
-            if(!isCameraReady) {
+            hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5 });
+            hands.onResults(res => {
+                if(!res.multiHandLandmarks.length) return;
                 isCameraReady = true;
+                statusDot.style.backgroundColor = '#4ade80';
                 statusText.innerText = "GESTURE ACTIVE";
-                statusDot.classList.add('bg-green-500', 'shadow-[0_0_5px_rgba(0,255,0,0.5)]');
-                videoContainer.style.opacity = 0.3; 
-            }
+                
+                const lm = res.multiHandLandmarks[0];
+                let openFingers = 0;
+                [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
+                
+                if (Math.hypot(lm[8].x - lm[4].x, lm[8].y - lm[4].y) < 0.05) switchState('zoom');
+                else if (openFingers >= 3) switchState('christus');
+                else switchState('tree');
 
-            const lm = res.multiHandLandmarks[0];
-            
-            let openFingers = 0;
-            [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
-            
-            const pinchDist = Math.hypot(lm[8].x - lm[4].x, lm[8].y - lm[4].y);
-            const isPinch = pinchDist < 0.05;
-
-            if (isPinch) {
-                switchState('zoom');
-            } else if (openFingers >= 4) {
-                switchState('christus');
-            } else {
-                switchState('tree');
-            }
-
-            const palmX = (lm[0].x + lm[5].x + lm[17].x) / 3;
-            const palmY = (lm[0].y + lm[5].y + lm[17].y) / 3;
-            targetRotationY = (palmX - 0.5) * 2.0; 
-            targetRotationX = (palmY - 0.5) * 0.8;
-        }
-
-        function onResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
+                targetRotationY = (lm[0].x - 0.5) * 2;
+                targetRotationX = (lm[0].y - 0.5) * 1;
+            });
+            const cam = new Camera(videoInput, { onFrame: async () => { await hands.send({image: videoInput}); }, width: 320, height: 240 });
+            cam.start();
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.015; 
             TWEEN.update();
-
-            rotatingPointLight.position.x = Math.cos(time * 0.5) * 35;
-            rotatingPointLight.position.z = Math.sin(time * 0.5) * 35;
-            rotatingPointLight.position.y = Math.sin(time * 0.3) * 20 + 10;
-            const lightColor = new THREE.Color().setHSL(Math.sin(time * 0.2) * 0.1 + 0.55, 1.0, 0.5); 
-            rotatingPointLight.color.copy(lightColor);
-
-            if (currentMode === 'tree') {
-                mainGroup.rotation.y += 0.002; 
-                mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 0.05;
-            } else {
-                if (isCameraReady) {
-                    mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.03;
-                    mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.03;
-                } else {
-                    mainGroup.rotation.y = Math.sin(time * 0.15) * 0.08;
-                    mainGroup.rotation.x = Math.sin(time * 0.1) * 0.04;
-                }
-            }
-
-            treeGroup.forEach(p => {
-                if (!p.isPhoto) {
-                    const wave1 = Math.sin(time / p.blinkSpeed + p.blinkOffset);
-                    const wave2 = Math.cos(time / (p.blinkSpeed*1.5) + p.blinkPhase);
-                    const blink = (wave1 + wave2) / 2; 
-                    const currentBase = currentMode === 'tree' ? p.baseEmissive : p.baseEmissive * 1.3;
-                    const blinkIntensity = currentMode === 'tree' ? 0.5 : 0.8;
-                    p.mesh.material.emissiveIntensity = currentBase + (blink * blinkIntensity);
-                    
-                    if (p.mesh.material.color.getHex() === CONFIG.colors.red) {
-                        const hue = 0.0 + (blink + 1) * 0.02; 
-                        p.mesh.material.color.setHSL(hue, 1.0, 0.5);
-                        p.mesh.material.emissive.setHSL(hue, 1.0, 0.5);
-                    }
-                }
-            });
-
-            if (currentMode === 'christus') {
-                spiritGroup.forEach(p => {
-                    const blink = Math.sin(time * 5 + p.blinkOffset);
-                    const detailBoost = p.mesh.userData.isDetail ? 0.8 : 0;
-                    p.mesh.material.emissiveIntensity = 1.8 + (blink * 0.6) + detailBoost;
-                });
-            }
-
+            time += 0.02;
+            mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.05;
+            mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.05;
+            if(currentMode === 'tree') mainGroup.rotation.y += 0.005;
             composer.render();
         }
 
