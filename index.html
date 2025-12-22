@@ -46,7 +46,7 @@
         }
 
         .state-badge {
-            font-size: 0.7rem; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; /* Reduced padding and font size */
             background: rgba(255,255,255,0.05); color: #888; transition: all 0.3s;
             display: flex; align-items: center; gap: 6px;
         }
@@ -92,12 +92,13 @@
     <div class="absolute inset-0 pointer-events-none flex flex-col justify-between z-20">
         <!-- Header -->
         <div class="p-4 mt-2 flex justify-between items-start">
-            <div class="glass-panel px-4 py-3 flex flex-col gap-2 min-w-[170px]">
-                <div class="flex items-center gap-3 border-b border-white/10 pb-2 mb-1">
-                    <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500 transition-all duration-500 shadow-[0_0_5px_rgba(0,0,0,0.5)]"></div>
-                    <span id="status-text" class="text-xs font-bold text-gray-200 tracking-wider">SYSTEM READY</span>
+            <!-- Adjusted: Reduced width and padding for mobile view -->
+            <div class="glass-panel px-3 py-2 flex flex-col gap-1 min-w-[130px]">
+                <div class="flex items-center gap-2 border-b border-white/10 pb-1 mb-1">
+                    <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-500 transition-all duration-500 shadow-[0_0_5px_rgba(0,0,0,0.5)]"></div>
+                    <span id="status-text" class="text-[10px] font-bold text-gray-200 tracking-wider">SYSTEM READY</span>
                 </div>
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
                     <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
                     <div id="badge-zoom" class="state-badge"><span>✌️</span> Zoom</div>
@@ -105,11 +106,11 @@
             </div>
             
             <div class="flex gap-3">
-                <button onclick="toggleMusic()" id="music-btn" class="glass-panel w-11 h-11 flex items-center justify-center text-gray-400 pointer-events-auto active:scale-95 hover:text-white transition-colors">
-                    <i class="fa-solid fa-music text-lg"></i>
+                <button onclick="toggleMusic()" id="music-btn" class="glass-panel w-10 h-10 flex items-center justify-center text-gray-400 pointer-events-auto active:scale-95 hover:text-white transition-colors">
+                    <i class="fa-solid fa-music text-base"></i>
                 </button>
-                <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
-                    <i class="fa-solid fa-question text-lg"></i>
+                <button onclick="toggleHelp()" class="glass-panel w-10 h-10 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
+                    <i class="fa-solid fa-question text-base"></i>
                 </button>
             </div>
         </div>
