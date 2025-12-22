@@ -186,7 +186,7 @@
         // --- Configuration ---
         const CONFIG = {
             treeParticles: 2200,    // 粒子数量
-            spiritParticles: 8000,  // 总粒子池，包含文字和模型
+            spiritParticles: 5500,  // Reduced for mobile performance (was 8000)
             photoCount: 12,         
             treeHeight: 65,
             treeRadius: 28,
@@ -310,14 +310,15 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            // Optimization: Limit pixel ratio for performance
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.3;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
             const renderScene = new RenderPass(scene, camera);
-            // Bloom parameters optimized to avoid washing out details
-            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.4, 0.85);
+            // Optimization: Reduced bloom resolution for performance
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth/2, window.innerHeight/2), 1.8, 0.4, 0.85);
             bloomPass.threshold = 0.15; // Slightly higher threshold to keep dark areas dark
             
             composer = new EffectComposer(renderer);
@@ -390,20 +391,18 @@
             const geoSmall = new THREE.IcosahedronGeometry(0.4, 0); 
             const geoPhoto = new THREE.PlaneGeometry(5.0, 6.0); 
 
-            const matGreen = new THREE.MeshPhysicalMaterial({
+            // Optimization: Downgraded to MeshStandardMaterial
+            const matGreen = new THREE.MeshStandardMaterial({
                 color: CONFIG.colors.matteGreen, roughness: 0.5, metalness: 0.3,
-                emissive: CONFIG.colors.matteGreen, emissiveIntensity: 0.3, 
-                clearcoat: 0.5
+                emissive: CONFIG.colors.matteGreen, emissiveIntensity: 0.3
             });
-            const matRed = new THREE.MeshPhysicalMaterial({
+            const matRed = new THREE.MeshStandardMaterial({
                 color: CONFIG.colors.red, roughness: 0.2, metalness: 0.6,
-                emissive: CONFIG.colors.red, emissiveIntensity: 0.8,
-                clearcoat: 0.8
+                emissive: CONFIG.colors.red, emissiveIntensity: 0.8
             });
-            const matGold = new THREE.MeshPhysicalMaterial({
+            const matGold = new THREE.MeshStandardMaterial({
                 color: CONFIG.colors.gold, roughness: 0.1, metalness: 1.0,
-                emissive: CONFIG.colors.gold, emissiveIntensity: 1.2,
-                clearcoat: 1.0
+                emissive: CONFIG.colors.gold, emissiveIntensity: 1.2
             });
             
             const photoIndices = new Set();
@@ -433,9 +432,9 @@
                     angle = (photoIter / CONFIG.photoCount) * Math.PI * 2; 
                     photoIter++;
 
-                    mat = new THREE.MeshPhysicalMaterial({
+                    mat = new THREE.MeshStandardMaterial({
                         map: defaultPhotoTexture, side: THREE.DoubleSide,
-                        roughness: 0.3, metalness: 0.2, clearcoat: 0.4,
+                        roughness: 0.3, metalness: 0.2,
                         emissive: 0xffffff, // Set to white so map can glow
                         emissiveMap: defaultPhotoTexture, // Set emissive map for brightness
                         emissiveIntensity: 0 // Start normal
@@ -492,7 +491,7 @@
 
             // Star
             const starGeo = new THREE.OctahedronGeometry(3.0, 0);
-            const starMat = new THREE.MeshPhysicalMaterial({
+            const starMat = new THREE.MeshStandardMaterial({
                 color: 0xffffff, emissive: 0xffee88, emissiveIntensity: 4.0, roughness: 0.1, metalness: 1.0
             });
             const star = new THREE.Mesh(starGeo, starMat);
@@ -561,8 +560,8 @@
         }
 
         async function createSpiritSystem() {
-            // 1. 设置材质
-            const matSpirit = new THREE.MeshPhysicalMaterial({
+            // 1. Settings Material - Optimization: Standard
+            const matSpirit = new THREE.MeshStandardMaterial({
                 color: 0xffffff,
                 roughness: 0.3, metalness: 1.0,
                 emissive: CONFIG.colors.spiritGold,
@@ -570,7 +569,8 @@
                 transparent: true,
                 opacity: 0
             });
-            const geo = new THREE.BoxGeometry(0.1, 0.1, 0.1); 
+            // Optimization: Slightly larger size since we have fewer particles
+            const geo = new THREE.BoxGeometry(0.12, 0.12, 0.12); 
 
             // 2. 生成文字粒子
             const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!"); 
