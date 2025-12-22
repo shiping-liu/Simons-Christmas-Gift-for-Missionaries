@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Simon's Christmas Gift for Missionaries/</title>
+    <title>Called to Serve - Vision Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -81,7 +81,6 @@
                 <div class="flex flex-col gap-1.5">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
                     <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
-                    <!-- Updated Zoom Icon -->
                     <div id="badge-zoom" class="state-badge"><span>✌️</span> Zoom</div>
                 </div>
             </div>
@@ -127,7 +126,6 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
-                    <!-- Updated to Victory Sign -->
                     <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✌️</div>
                     <div>
                         <div class="text-white font-bold text-lg mb-0.5">VICTORY SIGN</div>
@@ -444,8 +442,8 @@
                 for (let i = 0; i < count; i++) {
                     sampler.sample(tempPosition);
                     tempPosition.applyAxisAngle(rotationAxis, rotationAngle);
-                    // Updated: Move up significantly (+16)
-                    points.push(tempPosition.clone().multiplyScalar(18).add(new THREE.Vector3(0, 16, 0))); 
+                    // Updated: Significantly scaled up (25) and moved up (22)
+                    points.push(tempPosition.clone().multiplyScalar(25).add(new THREE.Vector3(0, 22, 0))); 
                 }
                 return points;
             } catch (error) {
@@ -522,9 +520,10 @@
                     for(let x=0; x<sizeW; x+=step) {
                         const alpha = data[(y*sizeW + x)*4]; 
                         if(alpha > 128) {
-                            const px = (x / sizeW) * 80 - 40;
-                            // Updated Text Position: Higher up (+2 instead of -18)
-                            const py = -((y / sizeH) * 20 - 10) + 2; 
+                            // Scale up text width (110) and offset (55)
+                            const px = (x / sizeW) * 110 - 55;
+                            // Updated Text Position: Higher up (+5) and taller (28)
+                            const py = -((y / sizeH) * 28 - 14) + 5; 
                             const pt = new THREE.Vector3(px, py, 12);
                             points.push(pt);
                         }
@@ -571,8 +570,8 @@
             spiritGroup.forEach(p => {
                 let targetScale, targetOpacity;
                 if (newState === 'christus') {
-                    // Increased scale to 2.0
-                    targetScale = 2.0; targetOpacity = 1;
+                    // Increased scale further to 2.5
+                    targetScale = 2.5; targetOpacity = 1;
                     new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur).easing(TWEEN.Easing.Quintic.Out).delay(Math.random() * 600).start();
                 } else {
                     targetScale = 0; targetOpacity = 0;
