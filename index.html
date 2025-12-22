@@ -54,6 +54,18 @@
             border: 1px solid rgba(255, 215, 0, 0.4); font-weight: bold;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
+        
+        .music-active {
+            color: #FFD700 !important;
+            border-color: rgba(255, 215, 0, 0.5) !important;
+            animation: pulse-gold 2s infinite;
+        }
+        
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
     </style>
 </head>
 <body>
@@ -62,6 +74,12 @@
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500 mb-6"></div>
         <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">LIGHT THE WORLD</div>
     </div>
+
+    <!-- Audio Element: Silent Night (Public Domain) -->
+    <audio id="bg-music" loop>
+        <source src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Silent_Night_-_US_Army_Band.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
 
     <div id="canvas-container"></div>
 
@@ -81,14 +99,18 @@
                 <div class="flex flex-col gap-1.5">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
                     <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
-                    <!-- Updated Zoom Icon -->
                     <div id="badge-zoom" class="state-badge"><span>✌️</span> Zoom</div>
                 </div>
             </div>
             
-            <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
-                <i class="fa-solid fa-question text-lg"></i>
-            </button>
+            <div class="flex gap-3">
+                <button onclick="toggleMusic()" id="music-btn" class="glass-panel w-11 h-11 flex items-center justify-center text-gray-400 pointer-events-auto active:scale-95 hover:text-white transition-colors">
+                    <i class="fa-solid fa-music text-lg"></i>
+                </button>
+                <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
+                    <i class="fa-solid fa-question text-lg"></i>
+                </button>
+            </div>
         </div>
 
         <!-- Footer: Updated Position to Bottom Left -->
@@ -127,7 +149,6 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
-                    <!-- Updated to Victory Sign -->
                     <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✌️</div>
                     <div>
                         <div class="text-white font-bold text-lg mb-0.5">VICTORY SIGN</div>
@@ -135,7 +156,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="toggleHelp()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
+            <button onclick="startExperience()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
         </div>
     </div>
 
@@ -185,6 +206,7 @@
         let time = 0;
         let isCameraReady = false;
         let rotatingPointLight;
+        let audio;
         
         // Hand Tracking State
         let targetRotationX = 0;
@@ -198,6 +220,7 @@
         const videoContainer = document.getElementById('video-container');
         const loadingScreen = document.getElementById('loading');
         const videoInput = document.getElementById('video-input');
+        const musicBtn = document.getElementById('music-btn');
         
         window.toggleHelp = () => {
             const el = document.getElementById('help-modal');
@@ -207,6 +230,26 @@
             } else {
                 el.style.opacity = '1'; el.style.pointerEvents = 'auto'; box.style.transform = 'scale(1)';
             }
+        };
+
+        window.toggleMusic = () => {
+            if(!audio) audio = document.getElementById('bg-music');
+            if(audio.paused) {
+                audio.play().then(() => {
+                    musicBtn.classList.add('music-active');
+                    musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
+                }).catch(e => console.log("Audio autoplay prevented"));
+            } else {
+                audio.pause();
+                musicBtn.classList.remove('music-active');
+                musicBtn.innerHTML = '<i class="fa-solid fa-music text-lg"></i>';
+            }
+        };
+
+        window.startExperience = () => {
+            toggleHelp();
+            // Try to start music on first interaction
+            toggleMusic(); 
         };
 
         async function init() {
@@ -444,8 +487,8 @@
                 for (let i = 0; i < count; i++) {
                     sampler.sample(tempPosition);
                     tempPosition.applyAxisAngle(rotationAxis, rotationAngle);
-                    // Updated: Significantly scaled up (25) and moved up (18)
-                    points.push(tempPosition.clone().multiplyScalar(25).add(new THREE.Vector3(0, 18, 0))); 
+                    // Updated: Scaled down to 20, height adjusted to 16
+                    points.push(tempPosition.clone().multiplyScalar(20).add(new THREE.Vector3(0, 16, 0))); 
                 }
                 return points;
             } catch (error) {
@@ -522,10 +565,10 @@
                     for(let x=0; x<sizeW; x+=step) {
                         const alpha = data[(y*sizeW + x)*4]; 
                         if(alpha > 128) {
-                            // Scale up text width (110) and offset (55)
-                            const px = (x / sizeW) * 110 - 55;
-                            // Updated Text Position: Higher up (+3) and taller (28)
-                            const py = -((y / sizeH) * 28 - 14) + 3; 
+                            // Scale down text width (90) and offset (45)
+                            const px = (x / sizeW) * 90 - 45;
+                            // Updated Text Position: +2 (just below feet)
+                            const py = -((y / sizeH) * 28 - 14) + 2; 
                             const pt = new THREE.Vector3(px, py, 12);
                             points.push(pt);
                         }
@@ -572,8 +615,8 @@
             spiritGroup.forEach(p => {
                 let targetScale, targetOpacity;
                 if (newState === 'christus') {
-                    // Increased scale further to 2.5
-                    targetScale = 2.5; targetOpacity = 1;
+                    // Scaled down to 2.0
+                    targetScale = 2.0; targetOpacity = 1;
                     new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur).easing(TWEEN.Easing.Quintic.Out).delay(Math.random() * 600).start();
                 } else {
                     targetScale = 0; targetOpacity = 0;
