@@ -420,7 +420,9 @@
                     mat = new THREE.MeshPhysicalMaterial({
                         map: defaultPhotoTexture, side: THREE.DoubleSide,
                         roughness: 0.3, metalness: 0.2, clearcoat: 0.4,
-                        emissive: 0x000000, emissiveIntensity: 0
+                        emissive: 0xffffff, // Set to white so map can glow
+                        emissiveMap: defaultPhotoTexture, // Set emissive map for brightness
+                        emissiveIntensity: 0 // Start normal
                     });
                     mesh = new THREE.Mesh(geoPhoto, mat);
                 } else {
@@ -440,8 +442,8 @@
                 const treePos = new THREE.Vector3(tx, y, tz);
 
                 const dist = Math.sqrt(tx*tx + tz*tz);
-                // Updated: Significantly reduced scatter factor to 1.0 offset
-                // This ensures photos stay much closer to the center, fitting better on narrow screens
+                // Updated: Reduced scatter factor for mobile zoom visibility
+                // Was 40, now 15 to keep photos closer
                 const scatterFactor = 15 / (dist + 0.5) + 1.0; 
                 const scatterPos = treePos.clone();
                 scatterPos.x *= scatterFactor;
@@ -688,7 +690,10 @@
             let idx = 0;
             treeGroup.forEach(p => {
                 if(p.isPhoto && photoTextures.length) {
-                    p.mesh.material.map = photoTextures[idx % photoTextures.length];
+                    const tex = photoTextures[idx % photoTextures.length];
+                    p.mesh.material.map = tex;
+                    // Important: Update emissiveMap too for the glow effect
+                    p.mesh.material.emissiveMap = tex;
                     p.mesh.material.needsUpdate = true;
                     idx++;
                 }
@@ -795,6 +800,11 @@
                         p.mesh.material.color.setHSL(hue, 1.0, 0.5);
                         p.mesh.material.emissive.setHSL(hue, 1.0, 0.5);
                     }
+                } else {
+                    // Update: Brighten photos in Zoom mode dynamically
+                    // Target intensity: 1.0 in zoom, 0.0 otherwise
+                    const targetInt = currentMode === 'zoom' ? 1.0 : 0.0;
+                    p.mesh.material.emissiveIntensity += (targetInt - p.mesh.material.emissiveIntensity) * 0.05;
                 }
             });
 
