@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Called to Serve - Vision</title>
+    <title>Called to Serve - Vision Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         body { 
             margin: 0; overflow: hidden; 
-            background: radial-gradient(circle at center, #010a01 0%, #000 100%);
+            background: radial-gradient(circle at center, #020a0f 0%, #000 100%);
             color: white; 
             font-family: 'Cinzel', serif;
             touch-action: none; 
@@ -31,11 +31,11 @@
         #video-input { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
 
         .glass-panel {
-            background: rgba(10, 20, 10, 0.6);
-            backdrop-filter: blur(16px);
+            background: rgba(10, 25, 30, 0.75); 
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
         }
 
         #loading {
@@ -45,20 +45,22 @@
         }
 
         .state-badge {
-            font-size: 0.75rem; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.7rem; padding: 4px 8px; border-radius: 4px;
             background: rgba(255,255,255,0.05); color: #888; transition: all 0.3s;
+            display: flex; align-items: center; gap: 6px;
         }
         .state-active {
             background: rgba(255, 215, 0, 0.2); color: #FFD700;
-            border: 1px solid rgba(255, 215, 0, 0.3); font-weight: bold;
+            border: 1px solid rgba(255, 215, 0, 0.4); font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
     </style>
 </head>
 <body>
 
     <div id="loading">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mb-4"></div>
-        <div class="text-yellow-500 text-xl font-serif tracking-widest">LIGHT THE WORLD</div>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-yellow-500 mb-6"></div>
+        <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">LIGHT THE WORLD</div>
     </div>
 
     <div id="canvas-container"></div>
@@ -71,31 +73,33 @@
     <div class="absolute inset-0 pointer-events-none flex flex-col justify-between z-20">
         <!-- Header -->
         <div class="p-4 mt-2 flex justify-between items-start">
-            <div class="glass-panel px-4 py-3 flex flex-col gap-2 min-w-[150px]">
+            <div class="glass-panel px-4 py-3 flex flex-col gap-2 min-w-[170px]">
                 <div class="flex items-center gap-3 border-b border-white/10 pb-2 mb-1">
-                    <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-500 transition-colors duration-500"></div>
-                    <span id="status-text" class="text-xs font-bold text-gray-300 tracking-wider">SYSTEM READY</span>
+                    <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-500 transition-all duration-500 shadow-[0_0_5px_rgba(0,0,0,0.5)]"></div>
+                    <span id="status-text" class="text-xs font-bold text-gray-200 tracking-wider">SYSTEM READY</span>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <div id="badge-tree" class="state-badge state-active">✊ 圣诞树 (Tree)</div>
-                    <div id="badge-christus" class="state-badge">🖐 异象 (Vision)</div>
+                <div class="flex flex-col gap-1.5">
+                    <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
+                    <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
+                    <div id="badge-zoom" class="state-badge"><span>👌</span> Zoom</div>
                 </div>
             </div>
             
-            <button onclick="toggleHelp()" class="glass-panel w-10 h-10 flex items-center justify-center text-yellow-500 pointer-events-auto active:scale-95">
-                <i class="fa-solid fa-question"></i>
+            <button onclick="toggleHelp()" class="glass-panel w-11 h-11 flex items-center justify-center text-yellow-400 pointer-events-auto active:scale-95 hover:text-yellow-200 transition-colors">
+                <i class="fa-solid fa-question text-lg"></i>
             </button>
         </div>
 
         <!-- Footer -->
-        <div class="p-6 w-full pointer-events-auto flex justify-center pb-8">
-            <label class="glass-panel px-8 py-4 flex items-center gap-3 cursor-pointer hover:bg-white/5 active:scale-95 transition-all group">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-700 to-yellow-900 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/20 transition-all">
-                    <i class="fa-solid fa-images text-white text-lg"></i>
+        <div class="p-6 w-full pointer-events-auto flex justify-center pb-10">
+            <label class="glass-panel px-8 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-t from-transparent to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i class="fa-solid fa-images text-white text-xl relative z-10"></i>
                 </div>
                 <div class="text-left">
-                    <div class="text-xs text-gray-400 uppercase tracking-wider">Memories</div>
-                    <div class="text-sm font-bold text-white">上传照片</div>
+                    <div class="text-xs text-gray-300 uppercase tracking-wider font-semibold">Memories</div>
+                    <div class="text-base font-bold text-white drop-shadow-sm">Upload Photos</div>
                 </div>
                 <input type="file" id="file-input" class="hidden" multiple accept="image/*">
             </label>
@@ -103,26 +107,33 @@
     </div>
 
     <!-- Help Modal -->
-    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="glass-panel p-8 max-w-sm w-4/5 text-center transform scale-95 transition-transform" id="help-box">
-            <h3 class="text-yellow-500 font-serif text-xl mb-6 tracking-widest border-b border-white/10 pb-4">Gesture Guide</h3>
-            <div class="space-y-6 text-left pl-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-8 text-center text-2xl">✊</div>
+    <div id="help-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg opacity-1 pointer-events-auto transition-opacity duration-500">
+        <div class="glass-panel p-8 max-w-md w-4/5 text-center transform scale-100 transition-transform border-yellow-500/20" id="help-box">
+            <h3 class="text-yellow-400 font-serif text-2xl mb-6 tracking-[0.15em] border-b border-yellow-500/20 pb-4 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">GESTURE GUIDE</h3>
+            <div class="space-y-6 text-left pl-2">
+                <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✊</div>
                     <div>
-                        <div class="text-white font-bold text-sm">握拳 (Fist)</div>
-                        <div class="text-gray-400 text-xs">展示圣诞树</div>
+                        <div class="text-white font-bold text-lg mb-0.5">FIST</div>
+                        <div class="text-gray-400 text-sm">Show the Christmas Tree</div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-8 text-center text-2xl">🖐</div>
+                <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">🖐</div>
                     <div>
-                        <div class="text-white font-bold text-sm">张手 (Open Hand)</div>
-                        <div class="text-gray-400 text-xs">树散开，展现神圣异象</div>
+                        <div class="text-white font-bold text-lg mb-0.5">OPEN HAND</div>
+                        <div class="text-gray-400 text-sm">Reveal the Vision (Move hand to rotate)</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">👌</div>
+                    <div>
+                        <div class="text-white font-bold text-lg mb-0.5">PINCH</div>
+                        <div class="text-gray-400 text-sm">Zoom in on Memories</div>
                     </div>
                 </div>
             </div>
-            <button onclick="toggleHelp()" class="mt-8 px-8 py-3 bg-yellow-900/40 text-yellow-400 text-xs rounded-lg hover:bg-yellow-800/40 transition w-full pointer-events-auto border border-yellow-500/20">BEGIN</button>
+            <button onclick="toggleHelp()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
         </div>
     </div>
 
@@ -147,27 +158,35 @@
 
         // --- Configuration ---
         const CONFIG = {
-            treeParticles: 1500,    // 树的粒子数量
-            spiritParticles: 4000,  // 增加数量以获得更精致的细节
-            photoCount: 8,          // 照片数量（少而精）
+            treeParticles: 2200,    // 粒子数量
+            spiritParticles: 7500,  // 稍微减少总粒子数以提高清晰度
+            photoCount: 12,         
             treeHeight: 65,
             treeRadius: 28,
             colors: {
-                matteGreen: 0x1a4015,  // 哑光绿
-                gold: 0xffd700,        // 金属金
-                red: 0x8b0000,         // 圣诞红
-                spiritGold: 0xffec8b   // 圣灵流光金
+                matteGreen: 0x005522,
+                gold: 0xffcc00,
+                red: 0xcc0000,
+                spiritGold: 0xffeebb
             }
         };
 
         let scene, camera, renderer, composer;
-        let treeGroup = [];   // 存放树粒子对象 {mesh, treePos, scatterPos}
-        let spiritGroup = []; // 存放耶稣/文字粒子对象 {mesh, spiritPos}
+        let mainGroup = new THREE.Group(); 
+        let treeGroup = [];   
+        let spiritGroup = []; 
         let photoTextures = [];
         let defaultPhotoTexture;
         let currentMode = 'tree'; 
         let time = 0;
         let isCameraReady = false;
+        let rotatingPointLight;
+        
+        // Hand Tracking State
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+        let pinchStrength = 0;
+        let zoomLevel = 1.0;
 
         // UI Refs
         const statusText = document.getElementById('status-text');
@@ -190,19 +209,17 @@
             initThree();
             generateDefaultTexture();
             
-            // 1. 生成树粒子
             createTreeSystem();
-            // 2. 生成圣灵（耶稣+文字）粒子
             await createSpiritSystem();
 
             animate();
 
             // Hide loading
             loadingScreen.style.opacity = '0';
-            setTimeout(() => loadingScreen.remove(), 1000);
+            setTimeout(() => loadingScreen.remove(), 1500);
 
             // Init Vision
-            statusText.innerText = "STARTING VISION...";
+            statusText.innerText = "INITIALIZING VISION...";
             try {
                 await initMediaPipe();
             } catch (e) {
@@ -214,39 +231,41 @@
 
         function initThree() {
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x010a01, 0.015); // 深绿色迷雾
+            scene.fog = new THREE.FogExp2(0x020a0f, 0.012);
 
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 10, 95);
+            camera.position.set(0, 12, 100);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.1;
+            renderer.toneMappingExposure = 1.3;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Post Processing - Heavy Bloom for that "divine" look
             const renderScene = new RenderPass(scene, camera);
-            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-            bloomPass.threshold = 0.05;
-            bloomPass.strength = 1.8; 
-            bloomPass.radius = 0.5;
+            // Bloom parameters optimized to avoid washing out details
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.8, 0.4, 0.85);
+            bloomPass.threshold = 0.15; // Slightly higher threshold to keep dark areas dark
             
             composer = new EffectComposer(renderer);
             composer.addPass(renderScene);
             composer.addPass(bloomPass);
 
-            // Lighting
-            scene.add(new THREE.AmbientLight(0x222222));
-            const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-            sunLight.position.set(10, 50, 20);
+            scene.add(new THREE.AmbientLight(0x333344)); 
+            const sunLight = new THREE.DirectionalLight(0xffddaa, 1.5);
+            sunLight.position.set(20, 50, 30);
             scene.add(sunLight);
-            
-            // 底部暖光，照亮树底
-            const bottomLight = new THREE.PointLight(0xffaa00, 3, 50);
-            bottomLight.position.set(0, -25, 10);
+
+            const bottomLight = new THREE.PointLight(0xffaa55, 4, 80);
+            bottomLight.position.set(0, -30, 15);
             scene.add(bottomLight);
+
+            rotatingPointLight = new THREE.PointLight(0x00ffaa, 3, 60);
+            rotatingPointLight.position.set(30, 10, 0);
+            scene.add(rotatingPointLight);
+            
+            scene.add(mainGroup);
 
             window.addEventListener('resize', onResize);
             document.getElementById('file-input').addEventListener('change', onFileUpload);
@@ -254,295 +273,385 @@
 
         function generateDefaultTexture() {
             const cvs = document.createElement('canvas');
-            cvs.width = 128; cvs.height = 128;
+            cvs.width = 256; cvs.height = 256; 
             const ctx = cvs.getContext('2d');
-            ctx.fillStyle = '#fff'; ctx.fillRect(0,0,128,128);
-            ctx.fillStyle = '#C5A000'; ctx.fillRect(4,4,120,120);
-            ctx.fillStyle = '#fff'; ctx.font = '50px serif';
-            ctx.textAlign = 'center'; ctx.fillText('✝', 64, 80);
+            const gradient = ctx.createLinearGradient(0, 0, 256, 256);
+            gradient.addColorStop(0, '#fff');
+            gradient.addColorStop(1, '#eee');
+            ctx.fillStyle = gradient; ctx.fillRect(0,0,256,256);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = '#C5A000'; ctx.strokeRect(4,4,248,248);
+            ctx.fillStyle = '#C5A000'; ctx.fillRect(12,12,232,232);
+            ctx.fillStyle = '#fff'; ctx.font = '100px serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('✝', 128, 128);
             defaultPhotoTexture = new THREE.CanvasTexture(cvs);
         }
 
-        // --- System 1: The Tree (Matte Green, Metal Gold, Red) ---
+        // --- System 1: Tree with Mid-Section Photos ---
         function createTreeSystem() {
-            const geo = new THREE.IcosahedronGeometry(0.6, 0); // 几何体作为粒子
-            const geoPhoto = new THREE.PlaneGeometry(4, 5);
+            const geo = new THREE.IcosahedronGeometry(0.7, 0); 
+            const geoSmall = new THREE.IcosahedronGeometry(0.4, 0); 
+            const geoPhoto = new THREE.PlaneGeometry(5.0, 6.0); 
 
-            // 材质定义
-            const matGreen = new THREE.MeshStandardMaterial({
-                color: CONFIG.colors.matteGreen, roughness: 0.8, metalness: 0.1,
-                emissive: 0x051005, emissiveIntensity: 0.2
+            const matGreen = new THREE.MeshPhysicalMaterial({
+                color: CONFIG.colors.matteGreen, roughness: 0.5, metalness: 0.3,
+                emissive: CONFIG.colors.matteGreen, emissiveIntensity: 0.3, 
+                clearcoat: 0.5
             });
-            const matRed = new THREE.MeshStandardMaterial({
-                color: CONFIG.colors.red, roughness: 0.3, metalness: 0.4,
-                emissive: 0x330000, emissiveIntensity: 0.5
+            const matRed = new THREE.MeshPhysicalMaterial({
+                color: CONFIG.colors.red, roughness: 0.2, metalness: 0.6,
+                emissive: CONFIG.colors.red, emissiveIntensity: 0.8,
+                clearcoat: 0.8
             });
-            const matGold = new THREE.MeshStandardMaterial({
-                color: CONFIG.colors.gold, roughness: 0.2, metalness: 1.0,
-                emissive: 0xaa8800, emissiveIntensity: 0.8
+            const matGold = new THREE.MeshPhysicalMaterial({
+                color: CONFIG.colors.gold, roughness: 0.1, metalness: 1.0,
+                emissive: CONFIG.colors.gold, emissiveIntensity: 1.2,
+                clearcoat: 1.0
             });
+            
+            const photoIndices = new Set();
+            while(photoIndices.size < CONFIG.photoCount) {
+                const idx = Math.floor(Math.random() * (CONFIG.treeParticles * 0.5)) + (CONFIG.treeParticles * 0.25);
+                photoIndices.add(idx);
+            }
 
             for(let i = 0; i < CONFIG.treeParticles; i++) {
                 let mesh, mat;
-                let isPhoto = false;
-
-                // 80% 绿色，15% 金色，5% 红色 (点缀照片)
-                const rand = Math.random();
-                if (i < CONFIG.photoCount) {
-                    isPhoto = true;
-                    mesh = new THREE.Mesh(geoPhoto, new THREE.MeshBasicMaterial({map: defaultPhotoTexture, side: THREE.DoubleSide}));
-                } else {
-                    if (rand > 0.85) mat = matGold;
-                    else if (rand > 0.75) mat = matRed;
-                    else mat = matGreen;
-                    
-                    mesh = new THREE.Mesh(geo, mat.clone());
-                    // 随机大小，金色粒子通常小一点闪一点
-                    const s = mat === matGold ? Math.random()*0.5 + 0.2 : Math.random()*0.8 + 0.4;
-                    mesh.scale.set(s,s,s);
-                }
-
-                // 螺旋算法
+                let isPhoto = photoIndices.has(i);
+                let baseScale = 1;
+                
                 const p = i / CONFIG.treeParticles;
                 const h = CONFIG.treeHeight;
-                const angle = p * Math.PI * 26 + i; // 紧密的螺旋
-                const r = (1 - p) * CONFIG.treeRadius;
+                const angle = p * Math.PI * 30 + i * 0.1;
+                const r = Math.pow((1 - p), 0.8) * CONFIG.treeRadius;
                 const y = (p * h) - (h / 2);
 
-                // Tree Position (Base)
-                const jitter = 1.5;
+                if (isPhoto) {
+                    mat = new THREE.MeshPhysicalMaterial({
+                        map: defaultPhotoTexture, side: THREE.DoubleSide,
+                        roughness: 0.3, metalness: 0.2, clearcoat: 0.4,
+                        emissive: 0x000000, emissiveIntensity: 0
+                    });
+                    mesh = new THREE.Mesh(geoPhoto, mat);
+                } else {
+                    const rand = Math.random();
+                    if (rand > 0.82) { mat = matGold; baseScale = Math.random()*0.6 + 0.3; }
+                    else if (rand > 0.70) { mat = matRed; baseScale = Math.random()*0.7 + 0.5; }
+                    else { mat = matGreen; baseScale = Math.random()*0.8 + 0.6; }
+                    
+                    const g = Math.random() > 0.3 ? geo : geoSmall;
+                    mesh = new THREE.Mesh(g, mat.clone());
+                    mesh.scale.set(baseScale, baseScale, baseScale);
+                }
+
+                const jitter = 2.0; 
                 const tx = Math.cos(angle) * r + (Math.random()-0.5)*jitter;
                 const tz = Math.sin(angle) * r + (Math.random()-0.5)*jitter;
                 const treePos = new THREE.Vector3(tx, y, tz);
 
-                // Scatter Position (Opened Hand) -> 像爆炸一样向外推
-                // 越靠近中心的粒子推得越远，形成一个中空区域
-                const dir = new THREE.Vector3(tx, 0, tz).normalize(); // 忽略Y轴方向，主要水平散开
                 const dist = Math.sqrt(tx*tx + tz*tz);
-                const scatterFactor = 30 / (dist + 1) + 1.2; // 靠近中心的推力大
+                const scatterFactor = 40 / (dist + 0.5) + 1.8; 
                 const scatterPos = treePos.clone();
                 scatterPos.x *= scatterFactor;
                 scatterPos.z *= scatterFactor;
-                scatterPos.y *= 1.1; // 稍微拉高一点
+                scatterPos.y *= 1.2; 
+                const scatterRot = new THREE.Euler(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
 
                 mesh.position.copy(treePos);
                 
-                // 只有照片要永远面朝摄像机
-                if(isPhoto) mesh.lookAt(0,0,100);
-                else mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+                if(isPhoto) {
+                    mesh.lookAt(tx*2, y, tz*2); 
+                } else {
+                    mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+                }
 
-                scene.add(mesh);
+                mainGroup.add(mesh);
                 
                 treeGroup.push({
                     mesh,
-                    originalScale: mesh.scale.clone(),
-                    treePos,
-                    scatterPos,
+                    treePos, treeRot: mesh.rotation.clone(),
+                    scatterPos, scatterRot,
                     isPhoto,
-                    blinkSpeed: Math.random() * 0.05 + 0.02,
-                    blinkOffset: Math.random() * Math.PI * 2
+                    baseEmissive: mat.emissiveIntensity,
+                    blinkSpeed: Math.random() * 0.08 + 0.03,
+                    blinkOffset: Math.random() * Math.PI * 2,
+                    blinkPhase: Math.random() * Math.PI 
                 });
             }
 
-            // 树顶星
-            const starGeo = new THREE.OctahedronGeometry(2.5, 0);
-            const starMat = new THREE.MeshStandardMaterial({color: 0xffffff, emissive: 0xffd700, emissiveIntensity: 2});
+            // Star
+            const starGeo = new THREE.OctahedronGeometry(3.0, 0);
+            const starMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff, emissive: 0xffee88, emissiveIntensity: 4.0, roughness: 0.1, metalness: 1.0
+            });
             const star = new THREE.Mesh(starGeo, starMat);
-            const starY = (CONFIG.treeHeight/2) + 2;
+            const starY = (CONFIG.treeHeight/2) + 3;
             star.position.set(0, starY, 0);
-            scene.add(star);
+            mainGroup.add(star);
+            
+            const starLight = new THREE.PointLight(0xffee88, 2, 30);
+            starLight.position.copy(star.position);
+            mainGroup.add(starLight);
+
             treeGroup.push({
                 mesh: star,
-                originalScale: new THREE.Vector3(1,1,1),
-                treePos: new THREE.Vector3(0, starY, 0),
-                scatterPos: new THREE.Vector3(0, starY + 15, 0), // 星星升起
+                treePos: new THREE.Vector3(0, starY, 0), treeRot: new THREE.Euler(0,0,0),
+                scatterPos: new THREE.Vector3(0, starY + 20, 0), scatterRot: new THREE.Euler(Math.PI/4, Math.PI/4, 0),
                 isPhoto: false,
-                blinkSpeed: 0, blinkOffset: 0
+                baseEmissive: 4.0,
+                blinkSpeed: 0.02, blinkOffset: 0, blinkPhase: 0
             });
         }
 
-        // --- System 2: The Spirit (Jesus + Text) ---
         async function createSpiritSystem() {
-            // 粒子材质：极亮的流光金
-            const matSpirit = new THREE.MeshStandardMaterial({
-                color: 0xffffff, 
-                roughness: 0.4, 
-                metalness: 1.0,
-                emissive: CONFIG.colors.spiritGold, 
-                emissiveIntensity: 1.2,
-                transparent: true,
-                opacity: 0 // 初始不可见
+            const matSpirit = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff, roughness: 0.3, metalness: 1.0,
+                emissive: CONFIG.colors.spiritGold, emissiveIntensity: 1.5,
+                clearcoat: 0.8, transparent: true, opacity: 0
             });
-            const geo = new THREE.BoxGeometry(0.3, 0.3, 0.3); // 方形像素点感觉
-
-            // 1. 生成文字粒子点位 "Thank you for your service to the Lord!"
-            const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!");
             
-            // 2. 生成耶稣形态点位
-            const christusPoints = generateChristusPoints(CONFIG.spiritParticles - textPoints.length);
+            const geoNormal = new THREE.BoxGeometry(0.2, 0.2, 0.2); 
+            // Smaller particles for finer details
+            const geoSmall = new THREE.BoxGeometry(0.08, 0.08, 0.08); 
 
-            // 合并所有点位
-            const allPoints = [...christusPoints, ...textPoints];
+            const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!"); 
+            
+            const bodyCount = Math.floor((CONFIG.spiritParticles - textPoints.length) * 0.85);
+            // Reduced head count to avoid clutter, focused on precision
+            const headDetailCount = CONFIG.spiritParticles - textPoints.length - bodyCount;
+
+            const bodyPoints = generateChristusBody_Replica(bodyCount);
+            const headPoints = generateChristusHead_Fix(headDetailCount);
+
+            const allPoints = [...bodyPoints, ...headPoints, ...textPoints];
 
             allPoints.forEach(pt => {
-                const mesh = new THREE.Mesh(geo, matSpirit.clone());
+                const isDetail = pt.userData && pt.userData.isDetail;
+                const mesh = new THREE.Mesh(isDetail ? geoSmall : geoNormal, matSpirit.clone());
                 
-                // 初始状态：位置随机（或者在中心），缩放为0
-                mesh.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+                if (isDetail) {
+                    // Lower intensity slightly to prevent detail washout
+                    mesh.material.emissiveIntensity = 1.8; 
+                }
+                
+                mesh.position.set((Math.random()-0.5)*40, (Math.random()-0.5)*40, (Math.random()-0.5)*40);
                 mesh.scale.set(0,0,0);
-                
-                scene.add(mesh);
+                mainGroup.add(mesh);
 
                 spiritGroup.push({
                     mesh,
-                    targetPos: pt, // 目标位置
-                    blinkSpeed: Math.random() * 0.1 + 0.1, // 闪烁更快
-                    blinkOffset: Math.random() * Math.PI * 2
+                    targetPos: pt.clone(), 
+                    blinkSpeed: (Math.random() * 0.1 + 0.1) * (isDetail ? 1.5 : 1),
+                    blinkOffset: Math.random() * Math.PI * 2,
+                    baseEmissive: mesh.material.emissiveIntensity
                 });
             });
         }
 
-        // 辅助：生成精致的 Christus 点云
-        function generateChristusPoints(count) {
+        // --- 核心算法 4.0：Christus Head Clarity (清晰度优化) ---
+        function generateChristusHead_Fix(count) {
             const points = [];
+            const headCenter = new THREE.Vector3(0, 17.0, 1.2); 
             
-            // 增加权重分布以获得更多细节
-            const headCount = Math.floor(count * 0.08); // 头部细节增加
-            const armCount = Math.floor(count * 0.25);
-            const bodyCount = count - headCount - armCount;
+            for(let i=0; i<count; i++) {
+                const r = Math.random();
+                const pt = new THREE.Vector3();
+                let isDetail = false;
 
-            // 1. Head (Refined Oval shape with volume)
-            for(let i=0; i<headCount; i++) {
-                const theta = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                const r = 1.9; // 略大的头部半径
-                // 椭球体拉伸模拟脸型
-                const x = r * 0.85 * Math.sin(phi) * Math.cos(theta);
-                const y = r * 1.15 * Math.sin(phi) * Math.sin(theta) + 16.5; // 提升头部高度
-                const z = r * 0.9 * Math.cos(phi) + 0.5; // 稍微前倾
-                points.push(new THREE.Vector3(x, y, z));
-            }
+                if (r < 0.20) { 
+                    // --- Face Mask (Key Features Only) ---
+                    // Reducing noise by focusing only on defining features
+                    const theta = (Math.random() - 0.5) * Math.PI * 0.7; 
+                    const phi = Math.random() * Math.PI * 0.4 + 0.2; 
+                    
+                    const rad = 2.0;
+                    let rMod = 0;
+                    
+                    // Stronger sculpting for clarity (negative space)
+                    // Deepen eye sockets (Don't generate points inside sockets)
+                    const isEyeSocket = Math.abs(theta) > 0.2 && Math.abs(theta) < 0.5 && phi > 0.45 && phi < 0.6;
+                    
+                    if (isEyeSocket) {
+                         // Skip point generation here creates shadow
+                         continue; 
+                    }
+                    
+                    // Nose prominence
+                    if (Math.abs(theta) < 0.15 && phi > 0.4 && phi < 0.8) rMod += 0.5 * (0.8-phi);
+                    // Brow ridge prominence
+                    if (phi > 0.4 && phi < 0.45) rMod += 0.2;
+                    // Cheekbones
+                    if (Math.abs(theta) > 0.5 && phi > 0.6 && phi < 0.8) rMod += 0.1;
 
-            // 2. Arms (Outstretched, welcoming, draped sleeves)
-            for(let i=0; i<armCount; i++) {
-                const isRight = Math.random() > 0.5 ? 1 : -1;
-                const t = Math.random(); // 0 to 1 along arm
-                
-                // Shoulder pos
-                const sx = isRight * 3.0; 
-                const sy = 14.5;
-                const sz = 0.5;
+                    let x = (rad + rMod) * Math.sin(phi) * Math.sin(theta);
+                    let y = (rad + rMod) * Math.cos(phi);
+                    let z = (rad + rMod) * Math.sin(phi) * Math.cos(theta);
+                    
+                    pt.set(x, y, z);
+                    pt.add(headCenter);
+                    rotatePointAroundX(pt, headCenter, 0.2);
+                    isDetail = true;
 
-                // Hand pos (Outstretched & forward)
-                const hx = isRight * 17; // 翼展
-                const hy = 12.5; // 手比肩低
-                const hz = 6.0; // 向前伸出
+                } else if (r < 0.60) {
+                    // --- Hair (Parting) ---
+                    const theta = Math.random() * Math.PI * 2;
+                    let phi = Math.random() * Math.PI * 0.5; 
+                    
+                    const skullRad = 2.05;
+                    const hairThick = 0.2 + Math.random() * 0.2; // Less random thickness
+                    
+                    let xVal = skullRad * Math.sin(phi) * Math.sin(theta);
+                    // Sharp Parting
+                    if (Math.abs(xVal) < 0.2 && phi < 0.8) {
+                        continue; // Clear parting line
+                    }
 
-                // 线性插值 + 曲线
-                let px = sx + (hx - sx) * t;
-                let py = sy + (hy - sy) * t;
-                let pz = sz + (hz - sz) * t;
+                    let x = (skullRad + hairThick) * Math.sin(phi) * Math.sin(theta);
+                    let y = (skullRad + hairThick) * Math.cos(phi);
+                    let z = (skullRad + hairThick) * Math.sin(phi) * Math.cos(theta);
 
-                // 增加手臂“肉感”厚度
-                const thickness = 0.5 + (1-t) * 0.3; 
-                const rTheta = Math.random() * Math.PI * 2;
-                const rRad = Math.random() * thickness;
-                
-                // 袖子垂坠感 (Sleeves draping down)
-                // 在手臂中段增加向下的偏移
-                const sleeveDrop = (t > 0.1 && t < 0.8) ? Math.random() * (1.5 + Math.sin(t*Math.PI)*1.0) : 0;
+                    if (z < 0.5 || Math.abs(x) > 1.5) {
+                        const drop = Math.random() * 3.5; 
+                        y -= drop;
+                        if (y < -1.5) {
+                            x *= (1.0 + ((-1.5 - y) * 0.3));
+                            z *= 1.1;
+                        }
+                    }
 
-                px += Math.cos(rTheta) * rRad;
-                py += Math.sin(rTheta) * rRad - sleeveDrop;
-                pz += Math.cos(rTheta) * rRad;
+                    pt.set(x, y, z);
+                    pt.add(headCenter);
+                    rotatePointAroundX(pt, headCenter, 0.2);
 
-                points.push(new THREE.Vector3(px, py, pz));
+                } else {
+                    // --- Beard ---
+                    const t = Math.random(); 
+                    const startY = headCenter.y - 0.5; 
+                    const endY = headCenter.y - 4.5;   
+                    const curY = startY + (endY - startY) * t;
+                    
+                    const width = 1.6 - (t * 0.3); 
+                    const angle = (Math.random() - 0.5) * Math.PI * 0.8; 
+                    
+                    // Beard Definition
+                    let depth = 1.8 + (Math.sin(t * Math.PI) * 0.5); 
+                    
+                    let x = Math.sin(angle) * width;
+                    let z = Math.cos(angle) * depth;
+                    
+                    if (t < 0.1) z *= 0.9; 
 
-                // 额外生成手掌细节 (High density at tips)
-                if (t > 0.95 && Math.random() > 0.5) {
-                    points.push(new THREE.Vector3(
-                        px + (Math.random()-0.5), 
-                        py + (Math.random()-0.5), 
-                        pz + (Math.random()-0.5)
-                    ));
-                }
-            }
-
-            // 3. Robes & Body (Complex draping)
-            for(let i=0; i<bodyCount; i++) {
-                // Height from neck (14.5) down to feet (-20)
-                const t = Math.random(); 
-                const y = 14.5 - (t * 34.5); 
-                
-                // 基础身形曲线 (倒锥形+腰身)
-                let baseR = 3.2 + (t * 5.0); 
-                if (t < 0.15) baseR = 2.5 + (t * 8.0); // 肩膀宽
-                
-                // 褶皱逻辑 (Folds)
-                const angle = Math.random() * Math.PI * 2;
-                
-                // 长袍设计：左肩厚重，右侧稍薄 (Classic Toga style)
-                // 增加基于角度的半径变化来模拟布料堆积
-                let foldAmp = 0.6 + (t * 1.2); 
-                // 复杂的正弦波叠加模拟布料褶皱
-                let foldDetail = Math.sin(angle * 10) * 0.3 + Math.sin(angle * 3 + y*0.2) * 0.4;
-                
-                let r = baseR + foldDetail * foldAmp;
-
-                // 披风/Sash (斜向的布料)
-                // 从左肩 (高Y, 正X) 到 右腰 (中Y, 负X)
-                const sashPhase = (y + 20) / 35; // normalized height
-                // 简单的判断：如果在 Sash 的路径上，增加半径
-                // 路径大约是 x = 3 -> -3 随着 y 降低
-                const expectedSashX = 5 - (sashPhase * 10); 
-                const currentX = Math.cos(angle) * r;
-                
-                // 如果当前点在 sash 路径附近，往外推
-                if (Math.abs(currentX - expectedSashX) < 2.0 && t < 0.6) {
-                    r += 0.8 + Math.random()*0.5;
+                    pt.set(x, curY - 17.0 + headCenter.y, z + 1.2); 
                 }
 
-                const px = Math.cos(angle) * r;
-                const pz = Math.sin(angle) * r * 0.8; // 稍微压扁一点，不那么圆
-                
-                points.push(new THREE.Vector3(px, y, pz));
+                pt.userData = { isDetail }; 
+                points.push(pt);
             }
             return points;
         }
 
-        // 辅助：Canvas 生成文字点云
+        function rotatePointAroundX(point, pivot, angle) {
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            const dy = point.y - pivot.y;
+            const dz = point.z - pivot.z;
+            point.y = pivot.y + dy * cos - dz * sin;
+            point.z = pivot.z + dy * sin + dz * cos;
+        }
+
+        // --- Arm Logic Update: Natural Elbow Bend ---
+        function generateChristusBody_Replica(count) {
+            const points = [];
+            const shoulderY = 13.5;
+            const handsCount = Math.floor(count * 0.22); 
+            const bodyCount = count - handsCount;
+
+            for(let i=0; i<handsCount; i++) {
+                const isRight = Math.random() > 0.5;
+                const side = isRight ? 1 : -1;
+                const t = Math.random(); 
+                
+                // Key Joints
+                const shoulder = new THREE.Vector3(side * 2.5, shoulderY, 0);
+                const elbow = new THREE.Vector3(side * 9.0, shoulderY - 2.5, 4.0); // Elbow out and forward
+                const hand = new THREE.Vector3(side * 15.0, shoulderY + 1.0, 8.0); // Hand higher, more forward
+
+                const pt = new THREE.Vector3();
+                let r = 0.5 + (1-t)*0.4; if (!isRight) r += 0.5; 
+
+                // Quadratic Bezier for Arm Curve
+                if (t < 0.5) {
+                    // Shoulder to Elbow (0 to 0.5 maps to 0 to 1)
+                    const subT = t * 2;
+                    pt.lerpVectors(shoulder, elbow, subT);
+                } else {
+                    // Elbow to Hand (0.5 to 1 maps to 0 to 1)
+                    const subT = (t - 0.5) * 2;
+                    pt.lerpVectors(elbow, hand, subT);
+                }
+
+                // Sleeve drape
+                const sleeveDrop = t * t * 2.0 * Math.sin(t * Math.PI); 
+                pt.y -= Math.random() * sleeveDrop;
+
+                if (t > 0.92) {
+                    // Hands - Palm Up Gesture
+                    const handSpread = (Math.random()-0.5) * 1.5;
+                    pt.x += handSpread;
+                    pt.z += (Math.random() - 0.5) * 0.5;
+                    pt.y += (Math.random() * 0.5); // Thickness
+                    if (Math.random() > 0.95) { 
+                        pt.userData = { isDetail: true }; 
+                    }
+                } else {
+                    // Arm volume
+                    const ang = Math.random() * Math.PI * 2;
+                    pt.x += Math.cos(ang)*r;
+                    pt.y += Math.sin(ang)*r*0.8;
+                    pt.z += Math.sin(ang)*r;
+                }
+                points.push(pt);
+            }
+
+            for(let i=0; i<bodyCount; i++) {
+                const t = Math.random(); const y = 14 - (t * 32); 
+                let r = 3.0 + (t * 3.5); const angle = Math.random() * Math.PI * 2; 
+                let robeThick = 0;
+                if (t < 0.2 && Math.cos(angle) < -0.2) robeThick += 1.5;
+                const xLoc = Math.cos(angle) * r; const sashY = -1.5 * xLoc + 5; 
+                if (Math.abs(y - sashY) < 3.0 && y > 0 && Math.sin(angle) > 0) robeThick += 1.0; 
+                if (t > 0.9) robeThick += Math.sin(angle * 8) * 0.8 + 1.0; 
+                robeThick += Math.sin(angle * 12) * 0.2; r += robeThick;
+                let zScale = 0.8; if (y > 5 && y < 13 && Math.cos(angle) > 0.2 && Math.sin(angle) > 0) r *= 0.8; 
+                points.push(new THREE.Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r * zScale));
+            }
+            return points;
+        }
+
         function generateTextPoints(textStr) {
             return new Promise(resolve => {
                 const cvs = document.createElement('canvas');
-                const size = 512;
-                cvs.width = size; cvs.height = size/2; // 宽一点
+                const sizeW = 1024; const sizeH = 256;
+                cvs.width = sizeW; cvs.height = sizeH; 
                 const ctx = cvs.getContext('2d');
-                
-                ctx.fillStyle = '#000'; ctx.fillRect(0,0,size,size/2);
-                ctx.fillStyle = '#fff'; 
-                ctx.font = 'bold 50px Cinzel'; // 字体
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
+                ctx.fillStyle = '#000'; ctx.fillRect(0,0,sizeW,sizeH);
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 48px Cinzel'; 
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 const lines = textStr.split('\n');
-                lines.forEach((line, i) => {
-                    ctx.fillText(line, size/2, (size/4) + (i*60) - 20);
-                });
-
-                const data = ctx.getImageData(0,0,size,size/2).data;
+                lines.forEach((line, i) => { ctx.fillText(line, sizeW/2, (sizeH/2) + (i*60) - 30); });
+                const data = ctx.getImageData(0,0,sizeW,sizeH).data;
                 const points = [];
-                const step = 4; // 采样步长，越小点越多
-
-                for(let y=0; y<size/2; y+=step) {
-                    for(let x=0; x<size; x+=step) {
-                        const alpha = data[(y*size + x)*4]; // 只检查alpha或者红色通道
+                const step = 4; 
+                for(let y=0; y<sizeH; y+=step) {
+                    for(let x=0; x<sizeW; x+=step) {
+                        const alpha = data[(y*sizeW + x)*4]; 
                         if(alpha > 128) {
-                            // 映射到 3D 空间
-                            // x: 0->512 => -30 -> 30
-                            // y: 0->256 => 20 -> -20 (反转Y)
-                            const px = (x / size) * 60 - 30;
-                            const py = -((y / (size/2)) * 30 - 15) - 22; // 放在耶稣脚下
-                            points.push(new THREE.Vector3(px, py, 5)); // 稍微靠前 z=5
+                            const px = (x / sizeW) * 80 - 40;
+                            const py = -((y / sizeH) * 20 - 10) - 26; 
+                            const pt = new THREE.Vector3(px, py, 12);
+                            if (alpha < 200 || Math.random() > 0.8) pt.userData = { isDetail: true };
+                            points.push(pt);
                         }
                     }
                 }
@@ -550,79 +659,55 @@
             });
         }
 
-        // --- Interaction Logic ---
         function switchState(newState) {
             if (currentMode === newState) return;
             currentMode = newState;
 
-            // UI Update
             document.getElementById('badge-tree').classList.toggle('state-active', newState === 'tree');
             document.getElementById('badge-christus').classList.toggle('state-active', newState === 'christus');
+            document.getElementById('badge-zoom').classList.toggle('state-active', newState === 'zoom');
 
-            const dur = 2000; // 动画时长
+            const dur = 2000; 
 
-            // 1. 处理树粒子
             treeGroup.forEach(p => {
-                const target = newState === 'tree' ? p.treePos : p.scatterPos;
-                
-                new TWEEN.Tween(p.mesh.position)
-                    .to(target, dur)
-                    .easing(TWEEN.Easing.Cubic.InOut)
-                    .start();
-
-                // 树粒子在散开时稍微变暗，让主角（耶稣）更亮
+                let target, targetRot;
+                if (newState === 'tree') {
+                    target = p.treePos; targetRot = p.treeRot;
+                } else if (newState === 'zoom' && p.isPhoto) {
+                    target = p.scatterPos.clone().multiplyScalar(0.5); target.z += 20; 
+                    targetRot = new THREE.Euler(0, 0, 0); 
+                } else {
+                    target = p.scatterPos; targetRot = p.scatterRot;
+                }
+                new TWEEN.Tween(p.mesh.position).to(target, dur).easing(TWEEN.Easing.Quintic.InOut).start();
+                if (p.isPhoto && newState === 'zoom') {
+                    new TWEEN.Tween(p.mesh.rotation).to({x:0, y:0, z:0}, dur).start();
+                    new TWEEN.Tween(p.mesh.scale).to({x:2, y:2, z:2}, dur).start();
+                } else {
+                    new TWEEN.Tween(p.mesh.rotation).to({x: targetRot.x, y: targetRot.y, z: targetRot.z}, dur).easing(TWEEN.Easing.Quintic.InOut).start();
+                    new TWEEN.Tween(p.mesh.scale).to({x:1, y:1, z:1}, dur).start();
+                }
                 if (!p.isPhoto) {
-                    const targetInt = newState === 'tree' ? (p.mesh.material.color.getHex() === CONFIG.colors.gold ? 0.8 : 0.2) : 0.1;
-                    new TWEEN.Tween(p.mesh.material)
-                        .to({ emissiveIntensity: targetInt }, dur)
-                        .start();
+                    const targetInt = newState === 'tree' ? p.baseEmissive : p.baseEmissive * 1.5; 
+                    new TWEEN.Tween(p.mesh.material).to({ emissiveIntensity: targetInt }, dur).start();
                 }
             });
 
-            // 2. 处理圣灵粒子 (耶稣+文字)
             spiritGroup.forEach(p => {
                 let targetScale, targetOpacity;
-                
                 if (newState === 'christus') {
-                    // 显示
-                    targetScale = 1; 
-                    targetOpacity = 1;
-                    
-                    // 粒子飞向目标位置
-                    new TWEEN.Tween(p.mesh.position)
-                        .to(p.targetPos, dur)
-                        .easing(TWEEN.Easing.Quintic.Out) // 快速飞出然后减速
-                        .delay(Math.random() * 500) // 稍微错开
-                        .start();
-
+                    targetScale = 1; targetOpacity = 1;
+                    new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur).easing(TWEEN.Easing.Quintic.Out).delay(Math.random() * 600).start();
                 } else {
-                    // 隐藏
-                    targetScale = 0;
-                    targetOpacity = 0;
-                    
-                    // 粒子散开消失
-                    const randomHidePos = {
-                        x: (Math.random()-0.5)*20, 
-                        y: (Math.random()-0.5)*20, 
-                        z: (Math.random()-0.5)*20
-                    };
-                    new TWEEN.Tween(p.mesh.position)
-                        .to(randomHidePos, dur)
-                        .easing(TWEEN.Easing.Cubic.In)
-                        .start();
+                    targetScale = 0; targetOpacity = 0;
+                    const randomHidePos = { x: (Math.random()-0.5)*50, y: (Math.random()-0.5)*50+20, z: (Math.random()-0.5)*50 };
+                    new TWEEN.Tween(p.mesh.position).to(randomHidePos, dur).easing(TWEEN.Easing.Cubic.In).start();
                 }
-
-                new TWEEN.Tween(p.mesh.scale)
-                    .to({x: targetScale, y: targetScale, z: targetScale}, dur)
-                    .start();
-                    
-                new TWEEN.Tween(p.mesh.material)
-                    .to({ opacity: targetOpacity }, dur)
-                    .start();
+                new TWEEN.Tween(p.mesh.scale).to({x: targetScale, y: targetScale, z: targetScale}, dur).start();
+                new TWEEN.Tween(p.mesh.material).to({ opacity: targetOpacity }, dur).start();
             });
         }
 
-        // --- Standard Logic ---
         function onFileUpload(e) {
             const files = e.target.files;
             if(!files.length) return;
@@ -655,18 +740,10 @@
 
         async function initMediaPipe() {
             const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-            hands.setOptions({
-                maxNumHands: 1,
-                modelComplexity: 1, 
-                minDetectionConfidence: 0.5,
-                minTrackingConfidence: 0.5
-            });
+            hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
             hands.onResults(onResults);
-            
             const cameraObj = new Camera(videoInput, {
-                onFrame: async () => {
-                    if (videoInput.readyState >= 2) await hands.send({image: videoInput});
-                },
+                onFrame: async () => { if (videoInput.readyState >= 2) await hands.send({image: videoInput}); },
                 width: 320, height: 240, facingMode: 'user'
             });
             await cameraObj.start();
@@ -680,18 +757,30 @@
             if(!isCameraReady) {
                 isCameraReady = true;
                 statusText.innerText = "GESTURE ACTIVE";
-                statusDot.classList.add('bg-green-500');
-                videoContainer.style.opacity = 0.5;
+                statusDot.classList.add('bg-green-500', 'shadow-[0_0_5px_rgba(0,255,0,0.5)]');
+                videoContainer.style.opacity = 0.3; 
             }
 
             const lm = res.multiHandLandmarks[0];
+            
             let openFingers = 0;
-            // 简单的手指伸展检测
             [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
             
-            // Logic: 4个以上手指伸直 = 张手
-            if (openFingers >= 4) switchState('christus');
-            else switchState('tree');
+            const pinchDist = Math.hypot(lm[8].x - lm[4].x, lm[8].y - lm[4].y);
+            const isPinch = pinchDist < 0.05;
+
+            if (isPinch) {
+                switchState('zoom');
+            } else if (openFingers >= 4) {
+                switchState('christus');
+            } else {
+                switchState('tree');
+            }
+
+            const palmX = (lm[0].x + lm[5].x + lm[17].x) / 3;
+            const palmY = (lm[0].y + lm[5].y + lm[17].y) / 3;
+            targetRotationY = (palmX - 0.5) * 2.0; 
+            targetRotationX = (palmY - 0.5) * 0.8;
         }
 
         function onResize() {
@@ -703,34 +792,50 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.02;
+            time += 0.015; 
             TWEEN.update();
 
-            // 旋转逻辑
+            rotatingPointLight.position.x = Math.cos(time * 0.5) * 35;
+            rotatingPointLight.position.z = Math.sin(time * 0.5) * 35;
+            rotatingPointLight.position.y = Math.sin(time * 0.3) * 20 + 10;
+            const lightColor = new THREE.Color().setHSL(Math.sin(time * 0.2) * 0.1 + 0.55, 1.0, 0.5); 
+            rotatingPointLight.color.copy(lightColor);
+
             if (currentMode === 'tree') {
-                scene.rotation.y += 0.003; // 树模式自转
+                mainGroup.rotation.y += 0.002; 
+                mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 0.05;
             } else {
-                // 异象模式：缓慢回正或微动，不剧烈旋转，方便看清文字
-                scene.rotation.y += (0 - scene.rotation.y) * 0.03; 
+                if (isCameraReady) {
+                    mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.03;
+                    mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.03;
+                } else {
+                    mainGroup.rotation.y = Math.sin(time * 0.15) * 0.08;
+                    mainGroup.rotation.x = Math.sin(time * 0.1) * 0.04;
+                }
             }
 
-            // 粒子闪烁
-            // 1. 树粒子
             treeGroup.forEach(p => {
                 if (!p.isPhoto) {
-                    const blink = Math.sin(time * p.blinkSpeed + p.blinkOffset);
-                    // 保持基础亮度，添加闪烁波动
-                    const baseInt = currentMode === 'tree' ? 
-                        (p.mesh.material.color.getHex() === CONFIG.colors.gold ? 0.8 : 0.3) : 0.1;
-                    p.mesh.material.emissiveIntensity = baseInt + (blink * 0.3);
+                    const wave1 = Math.sin(time / p.blinkSpeed + p.blinkOffset);
+                    const wave2 = Math.cos(time / (p.blinkSpeed*1.5) + p.blinkPhase);
+                    const blink = (wave1 + wave2) / 2; 
+                    const currentBase = currentMode === 'tree' ? p.baseEmissive : p.baseEmissive * 1.3;
+                    const blinkIntensity = currentMode === 'tree' ? 0.5 : 0.8;
+                    p.mesh.material.emissiveIntensity = currentBase + (blink * blinkIntensity);
+                    
+                    if (p.mesh.material.color.getHex() === CONFIG.colors.red) {
+                        const hue = 0.0 + (blink + 1) * 0.02; 
+                        p.mesh.material.color.setHSL(hue, 1.0, 0.5);
+                        p.mesh.material.emissive.setHSL(hue, 1.0, 0.5);
+                    }
                 }
             });
 
-            // 2. 圣灵粒子 (只有在显示时才闪烁计算)
             if (currentMode === 'christus') {
                 spiritGroup.forEach(p => {
-                    const blink = Math.sin(time * p.blinkSpeed * 3 + p.blinkOffset); // 闪烁更快更神圣
-                    p.mesh.material.emissiveIntensity = 1.0 + (blink * 0.6); // 极亮波动
+                    const blink = Math.sin(time * 5 + p.blinkOffset);
+                    const detailBoost = p.mesh.userData.isDetail ? 0.8 : 0;
+                    p.mesh.material.emissiveIntensity = 1.8 + (blink * 0.6) + detailBoost;
                 });
             }
 
