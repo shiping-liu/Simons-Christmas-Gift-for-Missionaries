@@ -430,9 +430,12 @@
                 
                 const points = [];
                 const tempPosition = new THREE.Vector3();
-                
+                const rotationAxis = new THREE.Vector3(0, 1, 0);
+                const rotationAngle = -Math.PI / 2; // Rotate -90 degrees
+
                 for (let i = 0; i < count; i++) {
                     sampler.sample(tempPosition);
+                    tempPosition.applyAxisAngle(rotationAxis, rotationAngle);
                     // 适当缩放模型大小以匹配之前的视觉尺寸 (之前的模型大约高 35 单位)
                     // 假设标准 GLB 都是单位大小左右，乘以 18 大约合适
                     // 同时向下移动一点以居中
