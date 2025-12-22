@@ -81,6 +81,7 @@
                 <div class="flex flex-col gap-1.5">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
                     <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
+                    <!-- Updated Zoom Icon -->
                     <div id="badge-zoom" class="state-badge"><span>✌️</span> Zoom</div>
                 </div>
             </div>
@@ -90,7 +91,7 @@
             </button>
         </div>
 
-        <!-- Footer: Bottom Left -->
+        <!-- Footer: Updated Position to Bottom Left -->
         <div class="absolute bottom-8 left-8 pointer-events-auto">
             <label class="glass-panel px-6 py-3 flex items-center gap-3 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
@@ -126,6 +127,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
+                    <!-- Updated to Victory Sign -->
                     <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✌️</div>
                     <div>
                         <div class="text-white font-bold text-lg mb-0.5">VICTORY SIGN</div>
@@ -442,8 +444,8 @@
                 for (let i = 0; i < count; i++) {
                     sampler.sample(tempPosition);
                     tempPosition.applyAxisAngle(rotationAxis, rotationAngle);
-                    // Updated: Significantly scaled up (25) and moved up (22)
-                    points.push(tempPosition.clone().multiplyScalar(25).add(new THREE.Vector3(0, 22, 0))); 
+                    // Updated: Significantly scaled up (25) and moved up (18)
+                    points.push(tempPosition.clone().multiplyScalar(25).add(new THREE.Vector3(0, 18, 0))); 
                 }
                 return points;
             } catch (error) {
@@ -522,8 +524,8 @@
                         if(alpha > 128) {
                             // Scale up text width (110) and offset (55)
                             const px = (x / sizeW) * 110 - 55;
-                            // Updated Text Position: Higher up (+5) and taller (28)
-                            const py = -((y / sizeH) * 28 - 14) + 5; 
+                            // Updated Text Position: Higher up (+3) and taller (28)
+                            const py = -((y / sizeH) * 28 - 14) + 3; 
                             const pt = new THREE.Vector3(px, py, 12);
                             points.push(pt);
                         }
