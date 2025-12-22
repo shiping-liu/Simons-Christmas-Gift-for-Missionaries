@@ -81,7 +81,8 @@
                 <div class="flex flex-col gap-1.5">
                     <div id="badge-tree" class="state-badge state-active"><span>✊</span> Tree</div>
                     <div id="badge-christus" class="state-badge"><span>🖐</span> Vision</div>
-                    <div id="badge-zoom" class="state-badge"><span>👌</span> Zoom</div>
+                    <!-- Updated Zoom Icon -->
+                    <div id="badge-zoom" class="state-badge"><span>✌️</span> Zoom</div>
                 </div>
             </div>
             
@@ -90,16 +91,16 @@
             </button>
         </div>
 
-        <!-- Footer -->
-        <div class="p-6 w-full pointer-events-auto flex justify-center pb-10">
-            <label class="glass-panel px-8 py-4 flex items-center gap-4 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
+        <!-- Footer: Updated Position to Bottom Left -->
+        <div class="absolute bottom-8 left-8 pointer-events-auto">
+            <label class="glass-panel px-6 py-3 flex items-center gap-3 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-t from-transparent to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i class="fa-solid fa-images text-white text-xl relative z-10"></i>
+                    <i class="fa-solid fa-images text-white text-base relative z-10"></i>
                 </div>
                 <div class="text-left">
-                    <div class="text-xs text-gray-300 uppercase tracking-wider font-semibold">Memories</div>
-                    <div class="text-base font-bold text-white drop-shadow-sm">Upload Photos</div>
+                    <div class="text-[10px] text-gray-300 uppercase tracking-wider font-semibold">Memories</div>
+                    <div class="text-sm font-bold text-white drop-shadow-sm">Upload Photos</div>
                 </div>
                 <input type="file" id="file-input" class="hidden" multiple accept="image/*">
             </label>
@@ -126,9 +127,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">👌</div>
+                    <!-- Updated to Victory Sign -->
+                    <div class="w-12 h-12 flex items-center justify-center text-3xl bg-white/5 rounded-xl border border-white/10 shrink-0">✌️</div>
                     <div>
-                        <div class="text-white font-bold text-lg mb-0.5">PINCH</div>
+                        <div class="text-white font-bold text-lg mb-0.5">VICTORY SIGN</div>
                         <div class="text-gray-400 text-sm">Zoom in on Memories</div>
                     </div>
                 </div>
@@ -514,7 +516,8 @@
                         const alpha = data[(y*sizeW + x)*4]; 
                         if(alpha > 128) {
                             const px = (x / sizeW) * 80 - 40;
-                            const py = -((y / sizeH) * 20 - 10) - 26; 
+                            // Updated Text Position: Higher up (-18 instead of -26)
+                            const py = -((y / sizeH) * 20 - 10) - 18; 
                             const pt = new THREE.Vector3(px, py, 12);
                             points.push(pt);
                         }
@@ -631,13 +634,13 @@
             let openFingers = 0;
             [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
             
-            const pinchDist = Math.hypot(lm[8].x - lm[4].x, lm[8].y - lm[4].y);
-            const isPinch = pinchDist < 0.05;
+            // Replaced Pinch with Victory Sign (Index & Middle up, others down)
+            const isVictory = lm[8].y < lm[6].y && lm[12].y < lm[10].y && lm[16].y > lm[14].y && lm[20].y > lm[18].y;
 
-            if (isPinch) {
-                switchState('zoom');
-            } else if (openFingers >= 4) {
+            if (openFingers >= 4) {
                 switchState('christus');
+            } else if (isVictory) {
+                switchState('zoom');
             } else {
                 switchState('tree');
             }
