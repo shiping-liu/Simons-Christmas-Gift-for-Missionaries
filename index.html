@@ -260,6 +260,7 @@
         let currentMode = 'tree'; 
         let time = 0;
         let isCameraReady = false;
+        let isFormActive = false; // Add flag for form state
         let rotatingPointLight;
         let audio;
         let cachedModelPoints = []; // Store GLB points
@@ -287,6 +288,11 @@
         };
 
         window.openMissionaryForm = () => {
+            isFormActive = true; // Disable gestures
+            
+            // Ensure we are in tree mode for inputting
+            switchState('tree');
+
             // Start Music Immediately here
             startExperience();
 
@@ -337,6 +343,8 @@
             formEl.style.pointerEvents = 'none';
             setTimeout(() => formEl.classList.add('hidden'), 500);
 
+            isFormActive = false; // Re-enable gestures
+            
             // Ensure Music is playing (idempotent if already started)
             startExperience();
         };
@@ -773,6 +781,9 @@
         }
 
         function onResults(res) {
+            // Disable gestures when form is active
+            if (isFormActive) return;
+
             if(!res.multiHandLandmarks.length) {
                 statusDot.classList.remove('bg-green-500', 'status-active');
                 return;
@@ -828,7 +839,7 @@
                 mainGroup.rotation.y += 0.002; 
                 mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 0.05;
             } else {
-                if (isCameraReady) {
+                if (isCameraReady && !isFormActive) {
                     mainGroup.rotation.y += (targetRotationY - mainGroup.rotation.y) * 0.03;
                     mainGroup.rotation.x += (targetRotationX - mainGroup.rotation.x) * 0.03;
                 } else {
