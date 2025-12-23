@@ -21,7 +21,6 @@
         #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
         #video-container {
-            /* Updated top position to avoid overlap with UI buttons */
             position: absolute; top: 100px; right: 16px; width: 80px; height: 106px; 
             border-radius: 12px; overflow: hidden; z-index: 10;
             border: 1px solid rgba(255, 215, 0, 0.3);
@@ -39,6 +38,24 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.7);
         }
 
+        /* Form Inputs Styling */
+        .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFD700;
+            font-family: 'Cinzel', serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .glass-input:focus {
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+        select.glass-input option {
+            background: #020a0f;
+            color: white;
+        }
+
         #loading {
             position: fixed; inset: 0; background: #000; z-index: 100; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -46,7 +63,7 @@
         }
 
         .state-badge {
-            font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; /* Reduced padding and font size */
+            font-size: 0.65rem; padding: 3px 6px; border-radius: 4px;
             background: rgba(255,255,255,0.05); color: #888; transition: all 0.3s;
             display: flex; align-items: center; gap: 6px;
         }
@@ -76,10 +93,8 @@
         <div class="text-yellow-400 text-2xl font-serif tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">LIGHT THE WORLD</div>
     </div>
 
-    <!-- Audio Element: Silent Night (Added autoplay) -->
-    <audio id="bg-music" loop autoplay>
+    <audio id="bg-music" loop>
         <source src="Silent_night_holy_night.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
     <div id="canvas-container"></div>
@@ -92,7 +107,6 @@
     <div class="absolute inset-0 pointer-events-none flex flex-col justify-between z-20">
         <!-- Header -->
         <div class="p-4 mt-2 flex justify-between items-start">
-            <!-- Adjusted: Reduced width and padding for mobile view -->
             <div class="glass-panel px-3 py-2 flex flex-col gap-1 min-w-[130px]">
                 <div class="flex items-center gap-2 border-b border-white/10 pb-1 mb-1">
                     <div id="status-dot" class="w-2 h-2 rounded-full bg-gray-500 transition-all duration-500 shadow-[0_0_5px_rgba(0,0,0,0.5)]"></div>
@@ -115,7 +129,7 @@
             </div>
         </div>
 
-        <!-- Footer: Updated Position to Bottom Left, Smaller Size -->
+        <!-- Footer -->
         <div class="absolute bottom-8 left-8 pointer-events-auto">
             <label class="glass-panel px-4 py-2 flex items-center gap-3 cursor-pointer hover:bg-white/10 active:scale-95 transition-all group ring-1 ring-white/10 hover:ring-yellow-500/50">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/40 transition-all relative overflow-hidden">
@@ -131,7 +145,7 @@
         </div>
     </div>
 
-    <!-- Help Modal: Added inline style for opacity: 1 to fix double-click bug -->
+    <!-- Help Modal -->
     <div id="help-modal" style="opacity: 1;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg pointer-events-auto transition-opacity duration-500">
         <div class="glass-panel p-8 max-w-md w-4/5 text-center transform scale-100 transition-transform border-yellow-500/20" id="help-box">
             <h3 class="text-yellow-400 font-serif text-2xl mb-6 tracking-[0.15em] border-b border-yellow-500/20 pb-4 drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]">GESTURE GUIDE</h3>
@@ -158,7 +172,46 @@
                     </div>
                 </div>
             </div>
-            <button onclick="startExperience()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
+            <button onclick="openMissionaryForm()" class="mt-8 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">BEGIN EXPERIENCE</button>
+        </div>
+    </div>
+
+    <!-- Missionary Form Modal -->
+    <div id="missionary-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg hidden opacity-0 transition-opacity duration-500 pointer-events-none">
+        <div class="glass-panel p-8 max-w-sm w-full text-center border-yellow-500/20 transform scale-95 transition-transform" id="missionary-box">
+            <h3 class="text-yellow-400 font-serif text-xl mb-6 tracking-[0.1em] border-b border-yellow-500/20 pb-4">WHO IS SERVING?</h3>
+            
+            <div class="mb-4 text-left">
+                <label class="text-xs text-gray-400 block mb-1">Number of Missionaries</label>
+                <select id="missionary-count" onchange="updateFormFields()" class="glass-input w-full p-2 rounded text-sm">
+                    <option value="1">1 Missionary</option>
+                    <option value="2">2 Missionaries</option>
+                </select>
+            </div>
+
+            <!-- Missionary 1 -->
+            <div class="space-y-3 mb-4 text-left">
+                <div class="flex gap-2">
+                    <select id="m1-title" class="glass-input w-1/3 p-2 rounded text-sm">
+                        <option value="Elder">Elder</option>
+                        <option value="Sister">Sister</option>
+                    </select>
+                    <input type="text" id="m1-name" placeholder="Last Name" class="glass-input w-2/3 p-2 rounded text-sm">
+                </div>
+            </div>
+
+            <!-- Missionary 2 (Hidden by default) -->
+            <div id="m2-container" class="space-y-3 mb-6 text-left hidden">
+                <div class="flex gap-2">
+                    <select id="m2-title" class="glass-input w-1/3 p-2 rounded text-sm">
+                        <option value="Elder">Elder</option>
+                        <option value="Sister">Sister</option>
+                    </select>
+                    <input type="text" id="m2-name" placeholder="Last Name" class="glass-input w-2/3 p-2 rounded text-sm">
+                </div>
+            </div>
+
+            <button onclick="submitMissionaries()" class="mt-4 px-10 py-3 bg-gradient-to-r from-yellow-900/60 to-yellow-700/60 text-yellow-300 text-sm font-bold rounded-xl hover:from-yellow-800/60 hover:to-yellow-600/60 transition w-full pointer-events-auto border border-yellow-500/30 tracking-wider hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]">ENTER VISION</button>
         </div>
     </div>
 
@@ -183,10 +236,9 @@
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
         import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
 
-        // --- Configuration ---
         const CONFIG = {
-            treeParticles: 2200,    // 粒子数量
-            spiritParticles: 5500,  // Reduced for mobile performance (was 8000)
+            treeParticles: 2200,    
+            spiritParticles: 5500,  
             photoCount: 12,         
             treeHeight: 65,
             treeRadius: 28,
@@ -209,14 +261,13 @@
         let isCameraReady = false;
         let rotatingPointLight;
         let audio;
+        let cachedModelPoints = []; // Store GLB points
         
-        // Hand Tracking State
         let targetRotationX = 0;
         let targetRotationY = 0;
         let pinchStrength = 0;
         let zoomLevel = 1.0;
 
-        // UI Refs
         const statusText = document.getElementById('status-text');
         const statusDot = document.getElementById('status-dot');
         const videoContainer = document.getElementById('video-container');
@@ -227,12 +278,63 @@
         window.toggleHelp = () => {
             const el = document.getElementById('help-modal');
             const box = document.getElementById('help-box');
-            // Check opacity against '1' to toggle properly
             if (el.style.opacity === '1') {
                 el.style.opacity = '0'; el.style.pointerEvents = 'none'; box.style.transform = 'scale(0.95)';
             } else {
                 el.style.opacity = '1'; el.style.pointerEvents = 'auto'; box.style.transform = 'scale(1)';
             }
+        };
+
+        window.openMissionaryForm = () => {
+            // Close Help
+            const helpEl = document.getElementById('help-modal');
+            const helpBox = document.getElementById('help-box');
+            helpEl.style.opacity = '0'; helpEl.style.pointerEvents = 'none'; helpBox.style.transform = 'scale(0.95)';
+
+            // Open Form
+            const formEl = document.getElementById('missionary-modal');
+            const formBox = document.getElementById('missionary-box');
+            formEl.classList.remove('hidden');
+            // Small timeout to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                formEl.style.opacity = '1';
+                formEl.style.pointerEvents = 'auto';
+                formBox.style.transform = 'scale(1)';
+            }, 50);
+        };
+
+        window.updateFormFields = () => {
+            const count = document.getElementById('missionary-count').value;
+            const m2 = document.getElementById('m2-container');
+            if(count === '2') m2.classList.remove('hidden');
+            else m2.classList.add('hidden');
+        };
+
+        window.submitMissionaries = () => {
+            const count = document.getElementById('missionary-count').value;
+            const t1 = document.getElementById('m1-title').value;
+            const n1 = document.getElementById('m1-name').value.trim() || 'Missionary';
+            
+            let finalText = "Thank you for your service\nto the Lord,\n" + t1 + " " + n1;
+
+            if(count === '2') {
+                const t2 = document.getElementById('m2-title').value;
+                const n2 = document.getElementById('m2-name').value.trim() || 'Missionary';
+                finalText += "\n& " + t2 + " " + n2;
+            }
+            finalText += "!";
+
+            // Initialize Spirit System with custom text
+            initSpiritSystem(finalText);
+
+            // Hide Form
+            const formEl = document.getElementById('missionary-modal');
+            formEl.style.opacity = '0'; 
+            formEl.style.pointerEvents = 'none';
+            setTimeout(() => formEl.classList.add('hidden'), 500);
+
+            // Start Music
+            startExperience();
         };
 
         window.toggleMusic = () => {
@@ -250,15 +352,10 @@
         };
 
         window.startExperience = () => {
-            toggleHelp();
-            // 修复 Bug：只确保音乐播放，而不切换（避免误关）
             if(!audio) audio = document.getElementById('bg-music');
-            
             if (audio.paused) {
-                // 如果没播放，则播放
                 toggleMusic();
             } else {
-                // 如果已经在播放，确保按钮状态是激活的，不做暂停操作
                 musicBtn.classList.add('music-active');
                 musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
             }
@@ -269,28 +366,15 @@
             generateDefaultTexture();
             
             createTreeSystem();
-            await createSpiritSystem();
+            
+            // Start loading model points in background
+            preloadModelPoints();
 
             animate();
 
-            // Hide loading
             loadingScreen.style.opacity = '0';
             setTimeout(() => loadingScreen.remove(), 1500);
 
-            // Try to autoplay music on load and update button state
-            audio = document.getElementById('bg-music');
-            const promise = audio.play();
-            if (promise !== undefined) {
-                promise.then(_ => {
-                    musicBtn.classList.add('music-active');
-                    musicBtn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
-                }).catch(error => {
-                    // Auto-play was prevented, waiting for user interaction
-                    console.log("Autoplay prevented");
-                });
-            }
-
-            // Init Vision
             statusText.innerText = "INITIALIZING VISION...";
             try {
                 await initMediaPipe();
@@ -310,16 +394,14 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // Optimization: Limit pixel ratio for performance
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.3;
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
             const renderScene = new RenderPass(scene, camera);
-            // Optimization: Reduced bloom resolution for performance
             const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth/2, window.innerHeight/2), 1.8, 0.4, 0.85);
-            bloomPass.threshold = 0.15; // Slightly higher threshold to keep dark areas dark
+            bloomPass.threshold = 0.15; 
             
             composer = new EffectComposer(renderer);
             composer.addPass(renderScene);
@@ -352,46 +434,25 @@
             gradient.addColorStop(0, '#f8f8f8');
             gradient.addColorStop(1, '#e0e0e0');
             ctx.fillStyle = gradient; ctx.fillRect(0,0,256,256);
-            
-            // 更优雅的金色边框，类似相框
             ctx.lineWidth = 12;
             ctx.strokeStyle = '#D4AF37'; ctx.strokeRect(10,10,236,236);
-            
-            // Icon (Simple Image Landscape)
             ctx.fillStyle = '#D4AF37';
             ctx.beginPath();
-            // Mountain 1
-            ctx.moveTo(40, 180);
-            ctx.lineTo(100, 80);
-            ctx.lineTo(160, 180);
-            ctx.fill();
-            // Mountain 2
+            ctx.moveTo(40, 180); ctx.lineTo(100, 80); ctx.lineTo(160, 180); ctx.fill();
             ctx.beginPath();
-            ctx.moveTo(130, 180);
-            ctx.lineTo(180, 110);
-            ctx.lineTo(230, 180);
-            ctx.fill();
-            // Sun
+            ctx.moveTo(130, 180); ctx.lineTo(180, 110); ctx.lineTo(230, 180); ctx.fill();
             ctx.beginPath();
-            ctx.arc(190, 60, 20, 0, Math.PI*2);
-            ctx.fill();
-            
-            // Text "MEMORY"
-            ctx.fillStyle = '#888'; 
-            ctx.font = 'bold 24px Cinzel'; 
-            ctx.textAlign = 'center'; 
+            ctx.arc(190, 60, 20, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#888'; ctx.font = 'bold 24px Cinzel'; ctx.textAlign = 'center'; 
             ctx.fillText('MEMORY', 128, 220);
-
             defaultPhotoTexture = new THREE.CanvasTexture(cvs);
         }
 
-        // --- System 1: Tree with Mid-Section Photos ---
         function createTreeSystem() {
             const geo = new THREE.IcosahedronGeometry(0.7, 0); 
             const geoSmall = new THREE.IcosahedronGeometry(0.4, 0); 
             const geoPhoto = new THREE.PlaneGeometry(5.0, 6.0); 
 
-            // Optimization: Downgraded to MeshStandardMaterial
             const matGreen = new THREE.MeshStandardMaterial({
                 color: CONFIG.colors.matteGreen, roughness: 0.5, metalness: 0.3,
                 emissive: CONFIG.colors.matteGreen, emissiveIntensity: 0.3
@@ -407,12 +468,10 @@
             
             const photoIndices = new Set();
             while(photoIndices.size < CONFIG.photoCount) {
-                // Ensure unique indices roughly in the middle vertical range
                 const idx = Math.floor(Math.random() * (CONFIG.treeParticles * 0.5)) + (CONFIG.treeParticles * 0.25);
                 photoIndices.add(idx);
             }
 
-            // Iterator for EVEN distribution of photos
             let photoIter = 0; 
 
             for(let i = 0; i < CONFIG.treeParticles; i++) {
@@ -422,22 +481,17 @@
                 
                 const p = i / CONFIG.treeParticles;
                 const h = CONFIG.treeHeight;
-                // Default spiral angle
                 let angle = p * Math.PI * 30 + i * 0.1;
                 const r = Math.pow((1 - p), 0.8) * CONFIG.treeRadius;
                 const y = (p * h) - (h / 2);
 
                 if (isPhoto) {
-                    // Force even distribution around 360 degrees
                     angle = (photoIter / CONFIG.photoCount) * Math.PI * 2; 
                     photoIter++;
-
                     mat = new THREE.MeshStandardMaterial({
                         map: defaultPhotoTexture, side: THREE.DoubleSide,
                         roughness: 0.3, metalness: 0.2,
-                        emissive: 0xffffff, // Set to white so map can glow
-                        emissiveMap: defaultPhotoTexture, // Set emissive map for brightness
-                        emissiveIntensity: 0 // Start normal
+                        emissive: 0xffffff, emissiveMap: defaultPhotoTexture, emissiveIntensity: 0
                     });
                     mesh = new THREE.Mesh(geoPhoto, mat);
                 } else {
@@ -445,7 +499,6 @@
                     if (rand > 0.82) { mat = matGold; baseScale = Math.random()*0.6 + 0.3; }
                     else if (rand > 0.70) { mat = matRed; baseScale = Math.random()*0.7 + 0.5; }
                     else { mat = matGreen; baseScale = Math.random()*0.8 + 0.6; }
-                    
                     const g = Math.random() > 0.3 ? geo : geoSmall;
                     mesh = new THREE.Mesh(g, mat.clone());
                     mesh.scale.set(baseScale, baseScale, baseScale);
@@ -457,8 +510,6 @@
                 const treePos = new THREE.Vector3(tx, y, tz);
 
                 const dist = Math.sqrt(tx*tx + tz*tz);
-                // Updated: Reduced scatter factor for mobile zoom visibility
-                // Was 40, now 15 to keep photos closer
                 const scatterFactor = 15 / (dist + 0.5) + 1.0; 
                 const scatterPos = treePos.clone();
                 scatterPos.x *= scatterFactor;
@@ -467,13 +518,8 @@
                 const scatterRot = new THREE.Euler(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
 
                 mesh.position.copy(treePos);
-                
-                if(isPhoto) {
-                    // Face outward
-                    mesh.lookAt(tx*2, y, tz*2); 
-                } else {
-                    mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-                }
+                if(isPhoto) mesh.lookAt(tx*2, y, tz*2); 
+                else mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
 
                 mainGroup.add(mesh);
                 
@@ -489,7 +535,6 @@
                 });
             }
 
-            // Star
             const starGeo = new THREE.OctahedronGeometry(3.0, 0);
             const starMat = new THREE.MeshStandardMaterial({
                 color: 0xffffff, emissive: 0xffee88, emissiveIntensity: 4.0, roughness: 0.1, metalness: 1.0
@@ -498,7 +543,6 @@
             const starY = (CONFIG.treeHeight/2) + 3;
             star.position.set(0, starY, 0);
             mainGroup.add(star);
-            
             const starLight = new THREE.PointLight(0xffee88, 2, 30);
             starLight.position.copy(star.position);
             mainGroup.add(starLight);
@@ -513,54 +557,37 @@
             });
         }
 
-        // --- GLB Loading Logic ---
-        async function getPointsFromGLB(url, count = 7500) {
+        async function preloadModelPoints() {
             try {
                 const loader = new GLTFLoader();
-                const gltf = await loader.loadAsync(url);
+                const gltf = await loader.loadAsync('jesus_model.glb');
                 let mesh = null;
-                
-                gltf.scene.traverse(child => {
-                    if (child.isMesh && !mesh) mesh = child;
-                });
-
-                if (!mesh) {
-                    console.error("No mesh found in GLB");
-                    return [];
-                }
+                gltf.scene.traverse(child => { if (child.isMesh && !mesh) mesh = child; });
+                if (!mesh) return;
                 
                 const sampler = new MeshSurfaceSampler(mesh).build();
-                
-                const points = [];
                 const tempPosition = new THREE.Vector3();
                 const rotationAxis = new THREE.Vector3(0, 1, 0);
                 const rotationAngle = -Math.PI / 2; 
 
-                for (let i = 0; i < count; i++) {
+                // Generate a large pool of points
+                for (let i = 0; i < 7000; i++) {
                     sampler.sample(tempPosition);
                     tempPosition.applyAxisAngle(rotationAxis, rotationAngle);
-                    // Updated: Scaled down to 20, height adjusted to 16
-                    points.push(tempPosition.clone().multiplyScalar(20).add(new THREE.Vector3(0, 16, 0))); 
+                    cachedModelPoints.push(tempPosition.clone().multiplyScalar(20).add(new THREE.Vector3(0, 16, 0))); 
                 }
-                return points;
             } catch (error) {
-                console.warn("Failed to load GLB, falling back to procedural placeholder:", error);
-                return generateFallbackPlaceholder(count);
+                console.warn("GLB load failed, using fallback");
+                // Fallback sphere
+                for(let i=0; i<7000; i++) {
+                    const vec = new THREE.Vector3().randomDirection().multiplyScalar(15);
+                    cachedModelPoints.push(vec);
+                }
             }
         }
 
-        function generateFallbackPlaceholder(count) {
-            const points = [];
-            for(let i=0; i<count; i++) {
-                const vec = new THREE.Vector3();
-                vec.randomDirection().multiplyScalar(10);
-                points.push(vec);
-            }
-            return points;
-        }
-
-        async function createSpiritSystem() {
-            // 1. Settings Material - Optimization: Standard
+        // Modified to be called after form submit
+        async function initSpiritSystem(customText) {
             const matSpirit = new THREE.MeshStandardMaterial({
                 color: 0xffffff,
                 roughness: 0.3, metalness: 1.0,
@@ -569,23 +596,19 @@
                 transparent: true,
                 opacity: 0
             });
-            // Optimization: Slightly larger size since we have fewer particles
             const geo = new THREE.BoxGeometry(0.12, 0.12, 0.12); 
 
-            // 2. 生成文字粒子
-            const textPoints = await generateTextPoints("Thank you for your service\nto the Lord!"); 
+            const textPoints = await generateTextPoints(customText); 
             
-            // 3. 从 GLB 加载模型粒子
-            const modelParticleCount = Math.max(1000, CONFIG.spiritParticles - textPoints.length);
-            const modelPoints = await getPointsFromGLB('jesus_model.glb', modelParticleCount);
+            // Use cached points
+            // Adjust count based on text length to stay within budget
+            const modelCount = Math.max(1000, Math.min(cachedModelPoints.length, CONFIG.spiritParticles - textPoints.length));
+            const modelPoints = cachedModelPoints.slice(0, modelCount);
 
             const allPoints = [...modelPoints, ...textPoints];
 
-            // 3. 将提取的点位转化为粒子
             allPoints.forEach(pos => {
                 const mesh = new THREE.Mesh(geo, matSpirit.clone());
-                
-                // 初始位置：随机散布在空间
                 mesh.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
                 mesh.scale.set(0,0,0);
                 mainGroup.add(mesh);
@@ -618,9 +641,7 @@
                     for(let x=0; x<sizeW; x+=step) {
                         const alpha = data[(y*sizeW + x)*4]; 
                         if(alpha > 128) {
-                            // Scale down text width (90) and offset (45)
                             const px = (x / sizeW) * 90 - 45;
-                            // Updated Text Position: +2 (just below feet)
                             const py = -((y / sizeH) * 28 - 14) + 2; 
                             const pt = new THREE.Vector3(px, py, 12);
                             points.push(pt);
@@ -646,8 +667,7 @@
                 if (newState === 'tree') {
                     target = p.treePos; targetRot = p.treeRot;
                 } else if (newState === 'zoom' && p.isPhoto) {
-                    // Updated: Tighter zoom position for mobile
-                    target = p.scatterPos.clone().multiplyScalar(0.7); // Closer
+                    target = p.scatterPos.clone().multiplyScalar(0.7); 
                     target.z += 10; 
                     targetRot = new THREE.Euler(0, 0, 0); 
                 } else {
@@ -670,7 +690,6 @@
             spiritGroup.forEach(p => {
                 let targetScale, targetOpacity;
                 if (newState === 'christus') {
-                    // Scaled down to 2.0
                     targetScale = 2.0; targetOpacity = 1;
                     new TWEEN.Tween(p.mesh.position).to(p.targetPos, dur).easing(TWEEN.Easing.Quintic.Out).delay(Math.random() * 600).start();
                 } else {
@@ -708,7 +727,6 @@
                 if(p.isPhoto && photoTextures.length) {
                     const tex = photoTextures[idx % photoTextures.length];
                     p.mesh.material.map = tex;
-                    // Important: Update emissiveMap too for the glow effect
                     p.mesh.material.emissiveMap = tex;
                     p.mesh.material.needsUpdate = true;
                     idx++;
@@ -744,7 +762,6 @@
             let openFingers = 0;
             [8,12,16,20].forEach(t => { if(lm[t].y < lm[t-2].y) openFingers++; });
             
-            // Replaced Pinch with Victory Sign (Index & Middle up, others down)
             const isVictory = lm[8].y < lm[6].y && lm[12].y < lm[10].y && lm[16].y > lm[14].y && lm[20].y > lm[18].y;
 
             if (openFingers >= 4) {
@@ -758,17 +775,8 @@
             const palmX = (lm[0].x + lm[5].x + lm[17].x) / 3;
             const palmY = (lm[0].y + lm[5].y + lm[17].y) / 3;
             
-            // INVERTED ROTATION MAPPING:
-            // Moving hand LEFT (palmX increases in mirror mode? or decreases?)
-            // If mirror: left on screen is x=0.
-            // If I move my hand to the left (screen), I want the object to rotate to the left (around Y).
-            // This generally means positive rotation.
-            // If palmX goes 0.5 -> 0.0, we want positive rotation.
-            // (0.0 - 0.5) * -2.0 = +1.0. Correct.
-            // If palmX goes 0.5 -> 1.0 (right), we want negative rotation.
-            // (1.0 - 0.5) * -2.0 = -1.0. Correct.
             targetRotationY = (palmX - 0.5) * -2.5; 
-            targetRotationX = (palmY - 0.5) * 1.0; // Fixed: Inverted vertical rotation to match hand movement
+            targetRotationX = (palmY - 0.5) * 1.0; 
         }
 
         function onResize() {
@@ -817,8 +825,6 @@
                         p.mesh.material.emissive.setHSL(hue, 1.0, 0.5);
                     }
                 } else {
-                    // Update: Brighten photos in Zoom mode dynamically
-                    // Target intensity: 1.0 in zoom, 0.0 otherwise
                     const targetInt = currentMode === 'zoom' ? 1.0 : 0.0;
                     p.mesh.material.emissiveIntensity += (targetInt - p.mesh.material.emissiveIntensity) * 0.05;
                 }
@@ -834,7 +840,8 @@
             composer.render();
         }
 
-        init();
+        // Start initialization but delay spirit system creation until form submit
+        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
