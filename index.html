@@ -324,7 +324,7 @@
             if(count === '2') {
                 const t2 = document.getElementById('m2-title').value;
                 const n2 = document.getElementById('m2-name').value.trim() || 'Missionary';
-                finalText += "\n& " + t2 + " " + n2;
+                finalText += "\nand " + t2 + " " + n2;
             }
             finalText += "!";
 
@@ -592,6 +592,16 @@
 
         // Modified to be called after form submit
         async function initSpiritSystem(customText) {
+            // Cleanup existing spirit particles
+            if (spiritGroup.length > 0) {
+                spiritGroup.forEach(p => {
+                    mainGroup.remove(p.mesh);
+                    if (p.mesh.geometry) p.mesh.geometry.dispose();
+                    if (p.mesh.material) p.mesh.material.dispose();
+                });
+                spiritGroup = [];
+            }
+
             const matSpirit = new THREE.MeshStandardMaterial({
                 color: 0xffffff,
                 roughness: 0.3, metalness: 1.0,
